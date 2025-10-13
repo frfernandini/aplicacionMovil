@@ -55,7 +55,7 @@ fun LoginScreen(
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        // ¡MIRA QUÉ FÁCIL ES AHORA!
+
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             FormularioTextField(
                 value = uiState.correo,
@@ -72,7 +72,7 @@ fun LoginScreen(
             )
         }
 
-        // Mostramos un mensaje de error general si existe
+
         uiState.error?.let {
             Text(
                 text = it,
@@ -84,8 +84,7 @@ fun LoginScreen(
         Button(
             onClick = {
                 loginViewModel.iniciarSesion()
-                // Aquí, en el futuro, observarías un evento del ViewModel
-                // para navegar a la pantalla principal si el login es exitoso.
+
             },
             modifier = Modifier
                 .fillMaxWidth()

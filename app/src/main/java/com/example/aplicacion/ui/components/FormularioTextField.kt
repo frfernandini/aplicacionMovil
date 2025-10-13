@@ -18,8 +18,7 @@ fun FormularioTextField(
     onValueChange: (String) -> Unit,
     label: String,
     isError: Boolean = false,
-    // 👇 CAMBIO AQUÍ 👇
-    errorMessage: @Composable (() -> Unit)? = null, // Ahora es un Composable opcional
+    errorMessage: @Composable (() -> Unit)? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     isPasswordToggle: Boolean = false
 ) {
@@ -27,11 +26,11 @@ fun FormularioTextField(
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedContainerColor = MaterialTheme.colorScheme.surface,
         unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-        focusedBorderColor = MaterialTheme.colorScheme.primary,
-        unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-        focusedTextColor = MaterialTheme.colorScheme.onSurface,
-        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-        focusedLabelColor = MaterialTheme.colorScheme.primary,
+        focusedBorderColor = MaterialTheme.colorScheme.secondary,
+        unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+        focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
         unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
         cursorColor = MaterialTheme.colorScheme.primary,
         errorCursorColor = MaterialTheme.colorScheme.error,
@@ -48,7 +47,6 @@ fun FormularioTextField(
         singleLine = true,
         // 'isError' le dice al componente que use los colores de error definidos arriba
         isError = isError,
-        // 'supportingText' recibe directamente el Composable de error
         supportingText = errorMessage,
         visualTransformation = if (isPasswordToggle) PasswordVisualTransformation() else VisualTransformation.None,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType)

@@ -22,7 +22,7 @@ fun AppNavigation(){
     val loginViewModel : LoginViewModel = viewModel()
     NavHost(
         navController = navController,
-        startDestination = "login"
+        startDestination = "registro"
     ){
         composable("registro"){
             RegistroScreen(navController,usuarioViewModel)
