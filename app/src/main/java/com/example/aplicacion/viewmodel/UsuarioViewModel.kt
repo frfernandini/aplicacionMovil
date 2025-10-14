@@ -1,16 +1,21 @@
 package com.example.aplicacion.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.aplicacion.model.UsuarioErrores
 import com.example.aplicacion.model.UsuarioUiState
+import com.example.aplicacion.model.local.UsuarioEntity
+import com.example.aplicacion.model.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class UsuarioViewModel : ViewModel() {
+class UsuarioViewModel(private val repo: UsuarioRepository) : ViewModel() {
     private val _estado = MutableStateFlow(UsuarioUiState())
 
-    val estado: StateFlow<UsuarioUiState> = _estado
+    val estado: StateFlow<UsuarioUiState> = _estado.asStateFlow()
 
     fun onNombreChange(valor : String){
         _estado.update { it.copy(nombre = valor, errores = it.errores.copy(nombre = null)) }
@@ -37,7 +42,7 @@ class UsuarioViewModel : ViewModel() {
         val errores = UsuarioErrores(
             nombre = if (estadoActual.nombre.isBlank()) "campo obligatorio" else null,
             correo = if (!estadoActual.correo.contains("@")) "Correo Invalido" else null,
-            clave = if (estadoActual.clave.length < 6) null else "debe tener almenos 6 caracteres",
+            clave = if (estadoActual.clave.length < 6) "Debe tener al menos 6 caracteres" else null,
             direccion = if (estadoActual.direccion.isBlank()) "Campo Obligatorio" else null
         )
 
@@ -52,4 +57,23 @@ class UsuarioViewModel : ViewModel() {
 
         return !hayErrores
     }
+    fun registrarUsuario(){
+        if(validarFormulario()){
+            val nuevoUsuario = UsuarioEntity(
+                nombre = estado.value.nombre,
+                correo = estado.value.correo,
+                contrasena = estado.value.clave,
+                direccion = estado.value.direccion
+            )
+
+            viewModelScope.launch {
+                repo.guardar(nuevoUsuario)
+                _estado.update { it.copy(registroExitoso = true) }
+            }
+        }
+    }
+    fun onNavegacionRealizada(){
+        _estado.update { it.copy(registroExitoso = false) }
+    }
+
 }

@@ -6,5 +6,6 @@ data class UsuarioUiState(
     val clave: String = "",
     val direccion: String = "",
     val aceptaTerminos: Boolean = false,
-    val errores: UsuarioErrores = UsuarioErrores()
+    val errores: UsuarioErrores = UsuarioErrores(),
+    val registroExitoso: Boolean = false
 )

@@ -9,6 +9,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -31,6 +32,17 @@ fun LoginScreen(
 ) {
     // Observamos el estado desde el ViewModel
     val uiState by loginViewModel.loginState.collectAsState()
+
+    LaunchedEffect(key1 = uiState.loginExitoso) {
+        if (uiState.loginExitoso) {
+            // Navega a resumen y elimina la pantalla de login del back stack
+            navController.navigate("resumen") {
+                popUpTo("login") { inclusive = true }
+            }
+            // Resetea el estado en el ViewModel
+            loginViewModel.onNavegacionRealizada()
+        }
+    }
 
     Column(
         modifier = Modifier

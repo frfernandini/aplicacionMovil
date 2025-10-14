@@ -19,14 +19,21 @@ import androidx.navigation.NavController
 import com.example.aplicacion.R
 import com.example.aplicacion.ui.components.FormularioTextField // <-- PASO 1: IMPORTAR TU COMPONENTE
 import com.example.aplicacion.viewmodel.UsuarioViewModel
-
+import androidx.compose.runtime.LaunchedEffect
 @Composable
 fun RegistroScreen(
     navController: NavController,
     viewModel: UsuarioViewModel
 ) {
     val estado by viewModel.estado.collectAsState()
-
+    LaunchedEffect(key1 = estado.registroExitoso) {
+        if (estado.registroExitoso) {
+            navController.navigate("login") {
+                popUpTo("registro") { inclusive = true }
+            }
+            viewModel.onNavegacionRealizada()
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -103,11 +110,7 @@ fun RegistroScreen(
         }
 
         Button(
-            onClick = {
-                if (viewModel.validarFormulario()) {
-                    navController.navigate("resumen")
-                }
-            },
+            onClick = {viewModel.registrarUsuario()},
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Registrar")

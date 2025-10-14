@@ -1,12 +1,16 @@
 package com.example.aplicacion.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.room.util.copy
 import com.example.aplicacion.model.LoginUiState
+import com.example.aplicacion.model.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-class LoginViewModel: ViewModel() {
+import kotlinx.coroutines.launch
+
+class LoginViewModel(private val repo: UsuarioRepository): ViewModel() {
     private val _loginState = MutableStateFlow(LoginUiState())
     val loginState = _loginState.asStateFlow()
 
@@ -19,16 +23,23 @@ class LoginViewModel: ViewModel() {
     }
 
     fun iniciarSesion() {
-        // Aquí irá tu futura lógica para hablar con la base de datos SQLite
-        println("Intentando iniciar sesión con correo: ${_loginState.value.correo}")
-
-        // Simulación de un error para que veas cómo se mostraría
-        if (_loginState.value.correo.isBlank() || _loginState.value.clave.isBlank()) {
-            _loginState.update { it.copy(error = "Correo y contraseña no pueden estar vacíos") }
+        if(_loginState.value.correo.isBlank() || _loginState.value.clave.isBlank()){
+            _loginState.update { it.copy(error = "correo o contraseña vacios") }
             return
         }
+        viewModelScope.launch {
+            val usuario = repo.obtenerPorCorreo(_loginState.value.correo)
 
-        // Lógica de éxito (aquí navegarías a la siguiente pantalla)
-        _loginState.update { it.copy(error = null) }
+            if(usuario == null){
+                _loginState.update { it.copy(error = "Usuario no encontrado") }
+            }else if(usuario.contrasena != _loginState.value.clave){
+                _loginState.update { it.copy(error = "Contraseña incorrecta") }
+            }else{
+                _loginState.update{it.copy(error = null,loginExitoso = true) }
+            }
+        }
+    }
+    fun onNavegacionRealizada() {
+        _loginState.update { it.copy(loginExitoso = false) }
     }
 }

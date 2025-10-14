@@ -16,11 +16,14 @@ interface UsuarioDao {
     @Query("SELECT * FROM usuarios WHERE id = :id")
     suspend fun obtenerUsuarioPorId(id: Int): UsuarioEntity?
 
+    @Query("SELECT * FROM usuarios WHERE correo = :correo")
+    suspend fun obtenerUsuarioPorCorreo(correo : String): UsuarioEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertarUsuario(usuario: UsuarioEntity): Long
 
     @Update
-    suspend fun actualiar(usuario: UsuarioEntity)
+    suspend fun actualizar(usuario: UsuarioEntity)
 
     @Delete
     suspend fun eliminar(usuario: UsuarioEntity)

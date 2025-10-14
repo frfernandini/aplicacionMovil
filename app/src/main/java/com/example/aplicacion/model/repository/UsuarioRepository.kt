@@ -7,39 +7,19 @@ import kotlinx.coroutines.flow.Flow
 class UsuarioRepository(private val dao: UsuarioDao) {
     fun observarUsuarios(): Flow<List<UsuarioEntity>> = dao.obtenerUsuarios()
 
-    suspend fun obtener(id: Int) = dao.obtenerUsuarioPorId(id)
+    suspend fun obtener(id: Int): UsuarioEntity? = dao.obtenerUsuarioPorId(id)
 
-    suspend fun guardar(
-        id: Int,
-        nombre: String,
-        correo: String,
-        contrasena: String,
-        direccion: String
-    ){
-        if(id == null || id == 0){
-            dao.insertarUsuario(
-                UsuarioEntity(
-                    nombre = nombre,
-                    correo = correo,
-                    contrasena = contrasena,
-                    direccion = direccion
+    suspend fun obtenerPorCorreo(correo: String): UsuarioEntity? = dao.obtenerUsuarioPorCorreo(correo)
 
-                )
-            )
-        }else{
-            dao.actualizarUsuario(
-                UsuarioEntity(
-                    id = id,
-                    nombre = nombre,
-                    correo = correo,
-                    contrasena = contrasena,
-                    direccion = direccion
-                )
-            )
+    suspend fun guardar(usuario: UsuarioEntity) {
+        if (usuario.id == 0) {
+            dao.insertarUsuario(usuario)
+        } else {
+            dao.actualizar(usuario)
         }
     }
 
-    suspend fun eliminar(usuario: UsuarioEntity) = dao.eliminarUsuario(usuario)
-    suspend fun eliminarTodo() = dao.eliminarTodo()
+    suspend fun eliminar(usuario: UsuarioEntity) = dao.eliminar(usuario)
+    suspend fun eliminarTodo() = dao.eliminarTodoUsuarios()
 
 }
