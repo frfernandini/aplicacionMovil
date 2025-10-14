@@ -1,4 +1,4 @@
-package com.example.aplicacion.model.local
+package com.example.aplicacion.model.local.local
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
