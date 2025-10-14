@@ -1,4 +1,4 @@
-package com.example.aplicacion.model.local.local
+package com.example.aplicacion.model.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -11,5 +11,8 @@ data class ProductoEntity(
     val descripcion: String,
     val precio: Int,
     val urlImagen: String,
-    val categoria: String
+    val categoria: String,
+
+    //ESTADO PARA LA VALIDACION EN EL CARRITO
+    val enCarrito: Boolean = false
 )

@@ -1,4 +1,4 @@
-package com.example.aplicacion.model.local
+package com.example.aplicacion.model
 
 data class ProductoErrores(
     val nombre: String? = null,
