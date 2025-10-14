@@ -8,38 +8,25 @@ class ProductoRepository(private val dao: ProductoDAO) {
 
     fun obtenerProductos(): Flow<List<ProductoEntity>> = dao.mostrarTodos()
 
+    fun obtenerProdCarrito(): Flow<List<ProductoEntity>> = dao.obtenerCarrito()
+
     suspend fun obtener(categoria: String) = dao.obtenerPorCategoria(categoria)
 
-    suspend fun guardar(
-        id: Int?,
-        nombre: String?,
-        descripcion: String?,
-        precio: Double?,
-        urlImagen: String?,
-        categoria: String?,
+    //FUNCIONES QUE SE UTILIZARAN POSTERIORMENTE PARA AGREGAR PRODUCTOS Y VICEVERSA
+    suspend fun agregarAlCarrito(producto: ProductoEntity){
+        dao.actualizar(producto.copy(enCarrito = true))
+    }
 
-    ){
-        if (id == null || id == 0) {
-            dao.insertar(
-                ProductoEntity(
-                    nombre = nombre.trim(),
-                    descripcion = descripcion.trim(),
-                    precio = precio,
-                    urlImagen = urlImagen,
-                    categoria = categoria.trim()
-                )
-            )
+    suspend fun quitarDelCarrito(producto: ProductoEntity){
+        dao.actualizar(producto.copy(enCarrito = false))
+    }
+
+
+    suspend fun guardar(producto: ProductoEntity){
+        if (producto.id == null || producto.id == 0) {
+            dao.insertar(producto)
         } else {
-            dao.actualizar(
-                ProductoEntity(
-                    id = id,
-                    nombre = nombre.trim(),
-                    descripcion = descripcion.trim(),
-                    precio = precio,
-                    urlImagen = urlImagen,
-                    categoria = categoria.trim()
-                )
-            )
+            dao.actualizar(producto)
 
         }
     }
