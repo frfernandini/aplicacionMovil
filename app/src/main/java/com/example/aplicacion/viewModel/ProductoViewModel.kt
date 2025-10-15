@@ -22,7 +22,7 @@ class ProductoViewModel: ViewModel() {
         _estado.update { it.copy(descripcion = valor, errores = it.errores.copy(descripcion = null)) }
     }
 
-    fun onPrecioCharge(valor: Double){
+    fun onPrecioCharge(valor: String){
         _estado.update { it.copy(precio = valor, errores = it.errores.copy(precio = null)) }
     }
 
@@ -40,6 +40,8 @@ class ProductoViewModel: ViewModel() {
 
     fun validarProducto(): Boolean {
         val estadoActual = _estado.value
+        val precioDouble = _estado.value.precio.toDoubleOrNull()?: 0.0
+
         val errores = ProductoErrores(
             nombre =
                 if(estadoActual.nombre.isBlank())
@@ -51,16 +53,33 @@ class ProductoViewModel: ViewModel() {
                     "El Campo Es Obligatorio"
                 else
                     null,
-            /*precio =
-                if(estadoActual.precio <= 0)
-                    "El valor debe ser mayor y diferente de cero"
+            precio =
+                if(precioDouble <= 0)
+                    "El valor debe ser mayor y distinto de cero"
                 else
-                    0.0,*/
+                    null,
+            urlImagen =
+                if(estadoActual.urlImagen.isBlank())
+                    "La imagen es obligatoria"
+                else
+                    null,
             categoria =
                 if(estadoActual.categoria.isBlank())
                     "El Campo Es Obligatorio"
                 else
                     null,
         )
+
+        val existenErrores = listOfNotNull(
+            errores.nombre,
+            errores.descripcion,
+            errores.precio,
+            errores.urlImagen,
+            errores.categoria
+        ).isNotEmpty()
+
+        _estado.update { it.copy(errores = errores) }
+
+        return !existenErrores
     }
 }

@@ -3,7 +3,7 @@ package com.example.aplicacion.model
 data class ProductoUiState(
     val nombre: String = "",
     val descripcion: String = "",
-    val precio: Double = 0.0,
+    val precio: String = "",
     val urlImagen: String = "",
     val categoria: String = "",
     val enCarrito: Boolean = false,
