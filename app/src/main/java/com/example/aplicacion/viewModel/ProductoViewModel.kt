@@ -1,6 +1,7 @@
 package com.example.aplicacion.viewModel
 
 import androidx.lifecycle.ViewModel
+import com.example.aplicacion.model.ProductoErrores
 import com.example.aplicacion.model.ProductoUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,5 +36,31 @@ class ProductoViewModel: ViewModel() {
 
     fun onEnCarritoCharge(valor: Boolean){
         _estado.update { it.copy(enCarrito = valor) }
+    }
+
+    fun validarProducto(): Boolean {
+        val estadoActual = _estado.value
+        val errores = ProductoErrores(
+            nombre =
+                if(estadoActual.nombre.isBlank())
+                    "El Campo Es Obligatorio"
+                else
+                    null,
+            descripcion =
+                if(estadoActual.descripcion.isBlank())
+                    "El Campo Es Obligatorio"
+                else
+                    null,
+            /*precio =
+                if(estadoActual.precio <= 0)
+                    "El valor debe ser mayor y diferente de cero"
+                else
+                    0.0,*/
+            categoria =
+                if(estadoActual.categoria.isBlank())
+                    "El Campo Es Obligatorio"
+                else
+                    null,
+        )
     }
 }
