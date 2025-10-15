@@ -6,5 +6,6 @@ data class ProductoUiState(
     val precio: Double = 0.0,
     val urlImagen: String = "",
     val categoria: String = "",
+    val enCarrito: Boolean = false,
     val errores: ProductoErrores = ProductoErrores() //CONTENEDOR DE ERRORES
 )
