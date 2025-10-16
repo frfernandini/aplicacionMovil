@@ -108,12 +108,21 @@ fun RegistroScreen(
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
-
         Button(
             onClick = {viewModel.registrarUsuario()},
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Registrar")
+        }
+        TextButton(
+            onClick = {
+                navController.navigate("login") {
+                    popUpTo("registro") { inclusive = true }
+                }
+            },
+            modifier = Modifier.padding(top = 8.dp)
+        ) {
+            Text("¿Ya tienes una cuenta? Inicia sesion")
         }
     }
 }

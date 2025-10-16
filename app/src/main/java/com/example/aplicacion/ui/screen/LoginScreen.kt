@@ -8,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -28,9 +29,9 @@ import com.example.aplicacion.viewmodel.LoginViewModel
 @Composable
 fun LoginScreen(
     navController: NavController,
-    loginViewModel: LoginViewModel = viewModel() // Obtenemos el ViewModel
+    loginViewModel: LoginViewModel = viewModel() //
 ) {
-    // Observamos el estado desde el ViewModel
+
     val uiState by loginViewModel.loginState.collectAsState()
 
     LaunchedEffect(key1 = uiState.loginExitoso) {
@@ -103,6 +104,17 @@ fun LoginScreen(
                 .height(50.dp)
         ) {
             Text("Entrar")
+        }
+
+        TextButton(
+            onClick = {
+                navController.navigate("registro") {
+                    popUpTo("login") { inclusive = true }
+                }
+            },
+            modifier = Modifier.padding(top = 8.dp)
+        ) {
+            Text("¿No tienes una cuenta? Registrate")
         }
     }
 }

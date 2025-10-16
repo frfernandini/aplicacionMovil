@@ -26,7 +26,7 @@ fun AppNavigation(){
 
     NavHost(
         navController = navController,
-        startDestination = "registro"
+        startDestination = "login"
     ){
         composable("registro"){
             val usuarioViewModel: UsuarioViewModel = viewModel(factory = usuarioViewModelFactory)
