@@ -9,10 +9,10 @@ interface ProductoDAO {
     @Query("SELECT * FROM productos ORDER BY nombre ASC")
     fun mostrarTodos(): Flow<List<ProductoEntity>>
 
-    @Query("SELECT * FROM productos WHERE categoria = categoria")
-    suspend fun obtenerPorCategoria(categoria: String): ProductoEntity?
+    @Query("SELECT * FROM productos WHERE categoria = :categoria ORDER BY nombre ASC")
+    fun obtenerPorCategoria(categoria: String): Flow<List<ProductoEntity>>
 
-    @Query("SELECT * FROM productos WHERE enCarrito = true")
+    @Query("SELECT * FROM productos WHERE enCarrito = true ORDER BY nombre ASC")
     fun obtenerCarrito(): Flow<List<ProductoEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

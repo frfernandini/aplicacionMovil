@@ -10,7 +10,7 @@ class ProductoRepository(private val dao: ProductoDAO) {
 
     fun obtenerProdCarrito(): Flow<List<ProductoEntity>> = dao.obtenerCarrito()
 
-    suspend fun obtener(categoria: String) = dao.obtenerPorCategoria(categoria)
+    fun obtenerProdPorCategoria(categoria: String): Flow<List<ProductoEntity>> = dao.obtenerPorCategoria(categoria)
 
     //FUNCIONES QUE SE UTILIZARAN POSTERIORMENTE PARA AGREGAR PRODUCTOS Y VICEVERSA
     suspend fun agregarAlCarrito(producto: ProductoEntity){
@@ -18,9 +18,16 @@ class ProductoRepository(private val dao: ProductoDAO) {
     }
 
     suspend fun quitarDelCarrito(producto: ProductoEntity){
-        dao.actualizar(producto.copy(enCarrito = false))
+        dao.actualizar(producto.copy(enCarrito = false, cantidad = 1))
     }
 
+    suspend fun actualizarCantidad(producto: ProductoEntity, cantidad: Int) {
+        if (cantidad <= 0) {
+            quitarDelCarrito(producto)
+        } else {
+            dao.actualizar(producto.copy(cantidad = cantidad, enCarrito = true))
+        }
+    }
 
     suspend fun guardar(producto: ProductoEntity){
         if (producto.id == null || producto.id == 0) {

@@ -12,7 +12,7 @@ data class ProductoEntity(
     val precio: Double,
     val urlImagen: String,
     val categoria: String,
-
+    val cantidad: Int = 1,
     //ESTADO PARA LA VALIDACION EN EL CARRITO
     val enCarrito: Boolean = false
 )
