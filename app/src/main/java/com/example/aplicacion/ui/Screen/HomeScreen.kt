@@ -61,7 +61,7 @@ fun HomeScreen(navController: NavController) {
                 )
             )
 
-            // Sección "Ofertas de la Semana"
+
             ProductSection(
                 title = "Ofertas de la Semana",
                 productos = listOf(
@@ -74,14 +74,14 @@ fun HomeScreen(navController: NavController) {
     }
 }
 
-// --- Componentes Reutilizables ---
+
 
 
 
 @Composable
 fun BannerCarousel() {
     Image(
-        painter = painterResource(id = R.drawable.imagen_banner_1), // Reemplaza con tu banner
+        painter = painterResource(id = R.drawable.imagen_banner_1),
         contentDescription = "Banner Promocional",
         modifier = Modifier
             .fillMaxWidth()
@@ -96,11 +96,11 @@ fun BannerCarousel() {
 
 
 
-// --- Previsualización ---
+
 @Preview(showBackground = true, backgroundColor = 0xFF121212)
 @Composable
 fun HomeScreenPreview() {
-    MaterialTheme { // Envuelve en tu tema si lo tienes definido
+    MaterialTheme {
         HomeScreen(navController = rememberNavController())
     }
 }

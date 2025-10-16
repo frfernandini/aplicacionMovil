@@ -23,7 +23,7 @@ fun BottomNavBar() {
     ) {
         NavigationBarItem(
             selected = true,
-            onClick = { /*TODO*/ },
+            onClick = { },
             icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") },
             label = { Text("Inicio") },
             colors = NavigationBarItemDefaults.colors(
@@ -34,22 +34,21 @@ fun BottomNavBar() {
                 indicatorColor = CardBackground
             )
         )
-        // Añade los otros items...
         NavigationBarItem(
             selected = false,
-            onClick = { /*TODO*/ },
+            onClick = {  },
             icon = { Icon(Icons.Filled.Apps, contentDescription = "Categorías") },
             label = { Text("Categorías") }
         )
         NavigationBarItem(
             selected = false,
-            onClick = { /*TODO*/ },
+            onClick = {  },
             icon = { Icon(Icons.Default.EmojiEvents, contentDescription = "Eventos") },
             label = { Text("Eventos") }
         )
         NavigationBarItem(
             selected = false,
-            onClick = { /*TODO*/ },
+            onClick = {  },
             icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
             label = { Text("Perfil") }
         )
