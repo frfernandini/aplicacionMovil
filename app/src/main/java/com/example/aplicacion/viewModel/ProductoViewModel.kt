@@ -9,6 +9,7 @@ import com.example.aplicacion.model.repository.ProductoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -16,9 +17,12 @@ import kotlinx.coroutines.launch
 class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
 
     private val _estado = MutableStateFlow(ProductoUiState())
-
     //ESTADO EXPUESTO PARA LA UI
     val estado: StateFlow<ProductoUiState> = _estado
+
+    private val _busquedaCategoria = MutableStateFlow("")
+    val busquedaCategoria: StateFlow<String> = _busquedaCategoria
+
 
     val productos: StateFlow<List<ProductoEntity>> =
         repo.obtenerProductos().stateIn(
@@ -35,6 +39,16 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
             initialValue = emptyList()
         )
 
+    //MAP PERMITE CAMBIAR O TRANSFORMAR LOS DATOS CON LOS QUE SON ENTREGADOS EN ESTE CASO LA LISTA DE
+    //PRODUCTOS EN CARRITO
+    //DE MODO QUE SEA DINAMICO PERMITIENDO EDITAR EL TOTAL DEL CARRITO CADA VES QUE SE MODIFIQUE EL CARRITO
+    val totalCarrito: StateFlow<Double> = carrito
+        .map { productos -> productos.sumOf { it.precio * it.cantidad }}
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = 0.0
+        )
 
     fun onNombreCharge(valor: String){
         _estado.update { it.copy(nombre = valor, errores = it.errores.copy(nombre = null)) }
@@ -58,6 +72,19 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
 
     fun onEnCarritoCharge(valor: Boolean){
         _estado.update { it.copy(enCarrito = valor) }
+    }
+
+    fun onCategoriaBusquedaChange(valor: String) {
+        _busquedaCategoria.value = valor
+    }
+
+    //VALIDAR EL FILTRADO DE PRODUCTOS DEL BUSCADOR DESDE EL COMPOSABLE
+    val productosFiltrados = if (categoria.isBlank()) {
+        productos
+    } else {
+        val filtrados = productos.filter {it.categoria.contains(categoria, ignoreCase = true)}
+
+        if (filtrados.isEmpty()) productos else filtrados
     }
 
     fun limpiarFormProd() = run { _estado.value = ProductoUiState() }
@@ -153,4 +180,7 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
     }
 
     fun eliminarProducto(producto: ProductoEntity) = viewModelScope.launch { repo.eliminar(producto) }
+
+
+
 }
