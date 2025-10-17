@@ -78,14 +78,14 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
         _busquedaCategoria.value = valor
     }
 
-    //VALIDAR EL FILTRADO DE PRODUCTOS DEL BUSCADOR DESDE EL COMPOSABLE
-    val productosFiltrados = if (categoria.isBlank()) {
+    //VALIDAR EL FILTRADO DE PRODUCTOS DEL BUSCADOR DESDE EL COMPOSE
+    /*val productosFiltrados = if (categoria.isBlank()) {
         productos
     } else {
         val filtrados = productos.filter {it.categoria.contains(categoria, ignoreCase = true)}
 
         if (filtrados.isEmpty()) productos else filtrados
-    }
+    }*/
 
     fun limpiarFormProd() = run { _estado.value = ProductoUiState() }
 
