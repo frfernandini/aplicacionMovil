@@ -26,9 +26,9 @@ import com.example.aplicacion.viewModel.ProductoViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormProductScreen(
-    vm: ProductoViewModel,
-    onBack: () -> Unit,
-    onSaved: () -> Unit
+    vm: ProductoViewModel
+    /*onBack: () -> Unit,
+    onSaved: () -> Unit*/
 ) {
     val prod by vm.estado.collectAsState()
 
@@ -94,10 +94,10 @@ fun FormProductScreen(
                 Text(it, color = MaterialTheme.colorScheme.error)
             }
 
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            /*Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Button(onClick = onSaved, modifier = Modifier.weight(1f)) { Text("Guardar") }
                 OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f)) { Text("Cancelar") }
-            }
+            }*/
         }
     }
 }
