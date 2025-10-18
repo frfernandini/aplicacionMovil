@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.aplicacion.R
 import com.example.aplicacion.ui.theme.screen.AccentGreen
 import com.example.aplicacion.ui.theme.screen.CardBackground
@@ -33,7 +34,9 @@ import com.example.aplicacion.ui.theme.screen.TextColor
 import com.example.aplicacion.ui.theme.screen.TextColorSecondary
 
 @Composable
-fun TopBar() {
+fun TopBar(
+    navController: NavController
+) {
     Column(modifier = Modifier
         .background(DarkBackground)
         .padding(horizontal = 16.dp, vertical = 30.dp)) {
@@ -48,7 +51,7 @@ fun TopBar() {
                 modifier = Modifier.height(30.dp)
             )
             Row {
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = { navController.navigate("carrito") }) {
                     Icon(Icons.Default.ShoppingCart, contentDescription = "Carrito", tint = TextColor)
                 }
                 IconButton(onClick = { /*TODO*/ }) {

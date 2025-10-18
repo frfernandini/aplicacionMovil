@@ -45,7 +45,7 @@ fun HomeScreen(
     val productos by productoViewModel.productos.collectAsState()
 
     Scaffold(
-        topBar = { TopBar() },
+        topBar = { TopBar(navController = navController) },
         bottomBar = { BottomNavBar() },
         floatingActionButton = {
             FloatingActionButton(

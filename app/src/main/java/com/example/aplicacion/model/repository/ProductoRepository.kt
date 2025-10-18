@@ -29,6 +29,10 @@ class ProductoRepository(private val dao: ProductoDAO) {
         }
     }
 
+    suspend fun vaciarCarro() {
+        dao.vaciarCarrito()
+    }
+
     suspend fun guardar(producto: ProductoEntity) {
         if (producto.id == 0) {
             dao.insertar(producto)

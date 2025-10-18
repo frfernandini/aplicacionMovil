@@ -187,5 +187,10 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
         repo.actualizarCantidad(producto, cantidad)
     }
 
+    fun vaciarCarrito() = viewModelScope.launch {
+        repo.vaciarCarro()
+    }
+
+
     fun eliminarProducto(producto: ProductoEntity) = viewModelScope.launch { repo.eliminar(producto) }
 }

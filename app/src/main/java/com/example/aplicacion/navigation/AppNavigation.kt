@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.aplicacion.model.local.ProductoEntity
+import com.example.aplicacion.ui.theme.screen.CarritoScreen
 import com.example.aplicacion.ui.theme.screen.FormProductScreen
 import com.example.aplicacion.ui.theme.screen.HomeScreen
 import com.example.aplicacion.viewModel.ProductoViewModel
@@ -19,13 +20,14 @@ fun AppNavigation(vm: ProductoViewModel) {
         navController = navController,
         startDestination = "home"
     ) {
+        //HOME
         composable("home") {
             HomeScreen(
                 navController = navController,
                 productoViewModel = vm
             )
         }
-
+        //FORMULARIO PRODUCTO
         composable("formProducto") {
             FormProductScreen(
                 vm = vm,
@@ -40,7 +42,7 @@ fun AppNavigation(vm: ProductoViewModel) {
                     }
                 },
                 onDelete = {
-                    // Crear ProductoEntity desde ProductoUiState
+                    // Convertir a ProductoEntity
                     val productoParaEliminar = ProductoEntity(
                         id = vm.estado.value.id ?: 0,
                         nombre = vm.estado.value.nombre,
@@ -53,6 +55,13 @@ fun AppNavigation(vm: ProductoViewModel) {
                     vm.eliminarProducto(productoParaEliminar)
                     navController.popBackStack()
                 }
+            )
+        }
+        //CARRITO
+        composable("carrito") {
+            CarritoScreen(
+                vm = vm,
+                onBack = { navController.popBackStack() }
             )
         }
     }
