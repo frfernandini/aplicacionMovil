@@ -11,7 +11,7 @@ class LoginViewModelFactory(private val app: Application) : ViewModelProvider.Fa
     override fun <T : ViewModel> create(modelClass : Class<T> ):T {
         val db = AppDatabase.get(app)
         val repo = UsuarioRepository(db.usuarioDao())
-        return LoginViewModel(repo) as T
+        return LoginViewModel(app,repo) as T
 
     }
 }

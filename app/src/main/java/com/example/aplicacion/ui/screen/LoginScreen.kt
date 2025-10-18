@@ -16,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.error
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -29,19 +28,32 @@ import com.example.aplicacion.viewmodel.LoginViewModel
 @Composable
 fun LoginScreen(
     navController: NavController,
-    loginViewModel: LoginViewModel = viewModel() //
+    loginViewModel: LoginViewModel  //
 ) {
 
     val uiState by loginViewModel.loginState.collectAsState()
 
     LaunchedEffect(key1 = uiState.loginExitoso) {
         if (uiState.loginExitoso) {
-            // Navega a resumen y elimina la pantalla de login del back stack
-            navController.navigate("resumen") {
-                popUpTo("login") { inclusive = true }
+
+            // --- INICIO DE LA CORRECCIÓN ---
+
+            // Reemplaza esto:
+            // navController.navigate("perfil")
+
+            // Por esto:
+            navController.navigate("perfil") {
+                // Limpia la pila de navegación hasta la primera pantalla del grafo.
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true // También elimina la pantalla de inicio (login).
+                }
+                // Esto asegura que no se creen múltiples copias de la pantalla de perfil.
+                launchSingleTop = true
             }
-            // Resetea el estado en el ViewModel
-            loginViewModel.onNavegacionRealizada()
+
+            // --- FIN DE LA CORRECCIÓN ---
+
+            loginViewModel.onNavegacionRealizada() // Esto ya lo tienes y está bien
         }
     }
 

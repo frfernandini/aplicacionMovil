@@ -1,0 +1,76 @@
+package com.example.aplicacion.ui.screen
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.aplicacion.ui.components.ProfileMenuItem
+import com.example.aplicacion.ui.components.UserInfoSection
+import com.example.aplicacion.ui.theme.verdeNeon
+import com.example.aplicacion.viewmodel.PerfilViewModel
+
+
+@Composable
+fun ProfileScreen(navController: NavController, profileViewModel: PerfilViewModel) {
+    val uiState by profileViewModel.perfilState.collectAsState()
+
+
+    LaunchedEffect(key1 = uiState.logoutExitoso) {
+        if (uiState.logoutExitoso) {
+            navController.navigate("login") {
+                popUpTo(0) { inclusive = true }
+            }
+            profileViewModel.onNavegacionRealizada()
+        }
+    }
+
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF121212))
+            .padding(horizontal = 24.dp, vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        UserInfoSection(
+            nombreUsuario = uiState.nombreUsuario,
+            email = uiState.email,
+            imagenUri = uiState.imagenUri
+        )
+
+        Spacer(modifier = Modifier.padding(top = 16.dp))
+
+
+        ProfileMenuItem(Icons.Default.Edit, "Editar Perfil", verdeNeon) {
+            navController.navigate("editar_perfil")
+        }
+
+
+
+        Spacer(modifier = Modifier.weight(1f))
+
+
+        ProfileMenuItem(Icons.Default.Logout, "Cerrar Sesión", Color.Red) {
+            profileViewModel.onCerrarSesion()
+        }
+    }
+}
