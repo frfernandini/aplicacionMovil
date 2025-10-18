@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- INICIO DE LA CORRECCIÓN: Permisos necesarios para mapas y red -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- FIN DE LA CORRECCIÓN -->
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,6 +19,12 @@
         android:theme="@style/Theme.Aplicacion"
         tools:targetApi="31"
         android:enableOnBackInvokedCallback="false">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCiF3hBBkWHIT073VRphYB3wX0o7q7QrV8" />
+
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -20,7 +32,6 @@
             android:theme="@style/Theme.Aplicacion">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

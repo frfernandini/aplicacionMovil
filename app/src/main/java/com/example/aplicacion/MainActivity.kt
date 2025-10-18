@@ -8,7 +8,9 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,16 +21,14 @@ import com.example.aplicacion.viewmodel.UsuarioViewModel
 import com.example.aplicacion.viewmodel.UsuarioViewModelFactory
 
 class MainActivity : ComponentActivity() {
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             AplicacionTheme {
-                Scaffold{ innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)){
+                // Use Scaffold for Material Design structure
+                Scaffold { innerPadding ->
+                    // Apply padding to the content to avoid overlapping with system bars
+                    Box(modifier = Modifier.padding(innerPadding)) {
                         AppNavigation()
                     }
                 }

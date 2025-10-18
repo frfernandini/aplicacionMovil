@@ -3,7 +3,10 @@ package com.example.aplicacion.ui.theme
 import androidx.compose.ui.graphics.Color
 
 
+
+
 val negroGrafito = Color(0xFF1f1f1f)
+
 
 val azulElectrico = Color(0xFF1E90FF)
 val verdeNeon = Color(0xFF39FF14)
