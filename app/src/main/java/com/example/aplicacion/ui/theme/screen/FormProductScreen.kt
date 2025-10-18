@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -19,25 +20,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.aplicacion.ui.theme.*
 import com.example.aplicacion.viewModel.ProductoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormProductScreen(
-    vm: ProductoViewModel
-    /*onBack: () -> Unit,
-    onSaved: () -> Unit*/
+    vm: ProductoViewModel,
+    onBack: () -> Unit,
+    onSaved: () -> Unit,
+    onDelete: () -> Unit
 ) {
     val prod by vm.estado.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (prod.id == null) "Nuevo Producto" else "Editar Producto #${prod.id}") }
+                title = { Text(if (prod.id == null)
+                    "Agregar Nuevo Producto"
+                else
+                    "Editar Producto #${prod.id}") }
             )
-        }
+        },
+        containerColor = DarkBackground
     ) { padding ->
         Column(
             Modifier.fillMaxSize().padding(padding).padding(16.dp),
@@ -94,10 +102,28 @@ fun FormProductScreen(
                 Text(it, color = MaterialTheme.colorScheme.error)
             }
 
-            /*Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Button(onClick = onSaved, modifier = Modifier.weight(1f)) { Text("Guardar") }
-                OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f)) { Text("Cancelar") }
-            }*/
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Button(onClick = onSaved,
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = verdeNeon,
+                        contentColor = negroGrafito))
+                { Text("Guardar") }
+                OutlinedButton(onClick = onBack,
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = blanco,
+                        contentColor = azulElectrico))
+                { Text("Cancelar") }
+                if (prod.id != null && prod.id != 0){
+                Button(onClick = onDelete,
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFF3B30),
+                        contentColor = blanco))
+                { Text("Eliminar")}}
+            }
+
         }
     }
 }

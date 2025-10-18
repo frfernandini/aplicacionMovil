@@ -1,0 +1,82 @@
+package com.example.aplicacion.ui.theme.components
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.example.aplicacion.ui.theme.screen.*
+
+
+@Composable
+fun BottomNavBar() {
+    var selectedItem by remember { mutableStateOf(0) }
+
+    NavigationBar(
+        containerColor = CardBackground,
+        contentColor = TextColorSecondary
+    ) {
+        NavigationBarItem(
+            selected = selectedItem == 0,
+            onClick = { selectedItem = 0 },
+            icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") },
+            label = { Text("Inicio") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = AccentGreen,
+                selectedTextColor = AccentGreen,
+                unselectedIconColor = TextColorSecondary,
+                unselectedTextColor = TextColorSecondary,
+                indicatorColor = CardBackground
+            )
+        )
+        NavigationBarItem(
+            selected = selectedItem == 1,
+            onClick = { selectedItem = 1 },
+            icon = { Icon(Icons.Default.List, contentDescription = "Categorías") },
+            label = { Text("Categorías") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = AccentGreen,
+                selectedTextColor = AccentGreen,
+                unselectedIconColor = TextColorSecondary,
+                unselectedTextColor = TextColorSecondary,
+                indicatorColor = CardBackground
+            )
+        )
+        NavigationBarItem(
+            selected = selectedItem == 2,
+            onClick = { selectedItem = 2 },
+            icon = { Icon(Icons.Default.Star, contentDescription = "Eventos") },
+            label = { Text("Eventos") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = AccentGreen,
+                selectedTextColor = AccentGreen,
+                unselectedIconColor = TextColorSecondary,
+                unselectedTextColor = TextColorSecondary,
+                indicatorColor = CardBackground
+            )
+        )
+        NavigationBarItem(
+            selected = selectedItem == 3,
+            onClick = { selectedItem = 3 },
+            icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
+            label = { Text("Perfil") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = AccentGreen,
+                selectedTextColor = AccentGreen,
+                unselectedIconColor = TextColorSecondary,
+                unselectedTextColor = TextColorSecondary,
+                indicatorColor = CardBackground
+            )
+        )
+    }
+}

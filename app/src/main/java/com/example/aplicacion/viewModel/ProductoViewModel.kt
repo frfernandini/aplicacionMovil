@@ -39,8 +39,8 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
             initialValue = emptyList()
         )
 
-    //MAP PERMITE CAMBIAR O TRANSFORMAR LOS DATOS CON LOS QUE SON ENTREGADOS EN ESTE CASO LA LISTA DE
-    //PRODUCTOS EN CARRITO
+    //MAP PERMITE CAMBIAR O TRANSFORMAR LOS DATOS CON LOS QUE SON ENTREGADOS
+    // EN ESTE CASO LA LISTA DE PRODUCTOS EN CARRITO
     //DE MODO QUE SEA DINAMICO PERMITIENDO EDITAR EL TOTAL DEL CARRITO CADA VES QUE SE MODIFIQUE EL CARRITO
     val totalCarrito: StateFlow<Double> = carrito
         .map { productos -> productos.sumOf { it.precio * it.cantidad }}
@@ -62,8 +62,8 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
         _estado.update { it.copy(precio = valor, errores = it.errores.copy(precio = null)) }
     }
 
-    fun onUrlImagenCharge(valor: String){
-        _estado.update { it.copy(urlImagen = valor, errores = it.errores.copy(urlImagen = null)) }
+    fun onImagenCharge(valor: Int){
+        _estado.update { it.copy(imagen = valor, errores = it.errores.copy(imagen = null)) }
     }
 
     fun onCategoriaCharge(valor: String){
@@ -109,8 +109,8 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
                     "El valor debe ser mayor y distinto de cero"
                 else
                     null,
-            urlImagen =
-                if(estadoActual.urlImagen.isBlank())
+            imagen =
+                if(estadoActual.imagen == null)
                     "La imagen es obligatoria"
                 else
                     null,
@@ -125,7 +125,7 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
             errores.nombre,
             errores.descripcion,
             errores.precio,
-            errores.urlImagen,
+            errores.imagen,
             errores.categoria
         ).isNotEmpty()
 
@@ -140,27 +140,33 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
             nombre = producto.nombre,
             descripcion = producto.descripcion,
             precio = producto.precio.toString(),
-            urlImagen = producto.urlImagen,
+            imagen = producto.imagen,
             categoria = producto.categoria
         )
     }
 
 
-    fun guardarProducto(){
-        val precioDouble = _estado.value.precio.toDoubleOrNull()?: 0.0
+    fun guardarProducto() {
+        val precioDouble = _estado.value.precio.toDoubleOrNull() ?: 0.0
 
-        if(validarProducto()){
-            val productoNuevo = ProductoEntity(
+        if (validarProducto()) {
+            // Crear producto base
+            var producto = ProductoEntity(
                 nombre = estado.value.nombre,
                 descripcion = estado.value.descripcion,
                 precio = precioDouble,
-                urlImagen = estado.value.urlImagen,
+                imagen = estado.value.imagen,
                 categoria = estado.value.categoria
             )
 
+            // Si estamos editando, asignamos el id existente
+            _estado.value.id.takeIf { it != 0 }?.let { id ->
+                producto = producto.copy(id = id)
+            }
+
             viewModelScope.launch {
-                repo.guardar(productoNuevo)
-                _estado.update { it.copy(productoExitoso = true ) }
+                repo.guardar(producto)
+                _estado.update { it.copy(productoExitoso = true) }
             }
         }
         limpiarFormProd()
@@ -180,7 +186,4 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
     }
 
     fun eliminarProducto(producto: ProductoEntity) = viewModelScope.launch { repo.eliminar(producto) }
-
-
-
 }

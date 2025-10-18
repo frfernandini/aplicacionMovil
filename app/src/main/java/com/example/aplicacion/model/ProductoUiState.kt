@@ -5,7 +5,7 @@ data class ProductoUiState(
     val nombre: String = "",
     val descripcion: String = "",
     val precio: String = "",
-    val urlImagen: String = "",
+    val imagen: Int = 0,
     val categoria: String = "",
     val enCarrito: Boolean = false,
     val errores: ProductoErrores = ProductoErrores(), //CONTENEDOR DE ERRORES
