@@ -12,7 +12,7 @@ fun AppNavigation(){
 
     NavHost(
         navController = navController,
-        startDestination = "eventos"
+        startDestination = "login"
     ){
         composable("eventos") {
             AplicacionTheme {
