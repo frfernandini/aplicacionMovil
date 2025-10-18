@@ -68,6 +68,7 @@ fun HomeScreen(
                 ProductSection(
                     title = "Productos Disponibles",
                     productos = productos,
+                    vm = productoViewModel,
                     onEdit = { producto ->
                         productoViewModel.cargarProdParaEditar(producto) //<- Nos Sirve para llenar el formulario
                                                                         // con la informacion correspondiente del producto

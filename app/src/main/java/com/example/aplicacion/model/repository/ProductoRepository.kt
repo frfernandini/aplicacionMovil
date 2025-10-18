@@ -43,7 +43,4 @@ class ProductoRepository(private val dao: ProductoDAO) {
 
     suspend fun eliminar(producto: ProductoEntity) = dao.eliminar(producto)
 
-    //PENDIENTE
-    //REVISAR PRODUCTOdao
-    //suspend fun eliminarTodos() = dao.eliminarTodos()
 }

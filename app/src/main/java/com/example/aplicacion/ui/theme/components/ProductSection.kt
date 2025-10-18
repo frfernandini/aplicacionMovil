@@ -17,11 +17,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.aplicacion.model.local.ProductoEntity
 import com.example.aplicacion.ui.theme.screen.TextColor
+import com.example.aplicacion.viewModel.ProductoViewModel
 
 @Composable
 fun ProductSection(
     title: String,
     productos: List<ProductoEntity>,
+    vm: ProductoViewModel,
     onEdit: (ProductoEntity) -> Unit
 ) {
     Column(modifier = Modifier.padding(vertical = 8.dp)) {
@@ -40,6 +42,7 @@ fun ProductSection(
             items(productos) { producto ->
                 ProductCard(
                     producto = producto,
+                    vm = vm,
                     onEdit = onEdit
                 )
             }

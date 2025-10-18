@@ -50,7 +50,7 @@ fun CatalogoScreen(
                             .clickable { onEdit(p) }
                             .padding(horizontal = 8.dp)
                     )
-                    Divider()
+                    //Divider()
                 }
             }
     }

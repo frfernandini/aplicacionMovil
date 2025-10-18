@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import com.example.aplicacion.model.local.ProductoEntity
 import com.example.aplicacion.viewModel.ProductoViewModel
+import com.example.aplicacion.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,6 +103,7 @@ fun CarritoItem(
     onDisminuir: () -> Unit,
     onEliminar: () -> Unit
 ) {
+    val imagenFondo = if (producto.imagen != 0) producto.imagen else R.drawable.ic_launcher_background
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -115,7 +117,7 @@ fun CarritoItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(producto.imagen),
+                painter = painterResource(imagenFondo),
                 contentDescription = producto.nombre,
                 modifier = Modifier
                     .size(64.dp)
