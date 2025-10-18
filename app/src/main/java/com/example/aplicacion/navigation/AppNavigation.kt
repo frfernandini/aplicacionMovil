@@ -34,8 +34,10 @@ fun AppNavigation(vm: ProductoViewModel) {
                     navController.popBackStack()
                 },
                 onSaved = {
-                    vm.guardarProducto()
-                    navController.popBackStack()
+                    val exito = vm.guardarProducto()
+                    if (exito) {
+                        navController.popBackStack()
+                    }
                 },
                 onDelete = {
                     // Crear ProductoEntity desde ProductoUiState

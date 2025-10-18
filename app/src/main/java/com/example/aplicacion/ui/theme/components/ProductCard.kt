@@ -68,6 +68,13 @@ fun ProductCard(
                 overflow = TextOverflow.Ellipsis
             )
             Text(
+                text = producto.descripcion,
+                color = TextColor,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
                 text = "$${String.format("%.2f", producto.precio)}",
                 color = TextColor,
                 fontWeight = FontWeight.Bold,

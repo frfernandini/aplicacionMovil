@@ -146,7 +146,7 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
     }
 
 
-    fun guardarProducto() {
+    fun guardarProducto(): Boolean {
         val precioDouble = _estado.value.precio.toDoubleOrNull() ?: 0.0
 
         if (validarProducto()) {
@@ -168,8 +168,10 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
                 repo.guardar(producto)
                 _estado.update { it.copy(productoExitoso = true) }
             }
+            limpiarFormProd()
+            return true
         }
-        limpiarFormProd()
+        return false
     }
 
     //FUNCIONES DEL CARRITO

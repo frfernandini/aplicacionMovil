@@ -30,7 +30,7 @@ class ProductoRepository(private val dao: ProductoDAO) {
     }
 
     suspend fun guardar(producto: ProductoEntity) {
-        if (producto.id == null) {
+        if (producto.id == 0) {
             dao.insertar(producto)
         } else {
             dao.actualizar(producto)
