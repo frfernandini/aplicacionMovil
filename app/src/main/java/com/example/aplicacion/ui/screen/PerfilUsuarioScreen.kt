@@ -8,10 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.EmojiEvents
-import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,13 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material3.Scaffold
 import androidx.navigation.NavController
 import com.example.aplicacion.ui.components.ProfileMenuItem
 import com.example.aplicacion.ui.components.UserInfoSection
 import com.example.aplicacion.ui.theme.verdeNeon
 import com.example.aplicacion.viewmodel.PerfilViewModel
-
+import com.example.aplicacion.ui.components.BottomNavBar
 
 @Composable
 fun ProfileScreen(navController: NavController, profileViewModel: PerfilViewModel) {
@@ -43,34 +40,43 @@ fun ProfileScreen(navController: NavController, profileViewModel: PerfilViewMode
     }
 
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF121212))
-            .padding(horizontal = 24.dp, vertical = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        UserInfoSection(
-            nombreUsuario = uiState.nombreUsuario,
-            email = uiState.email,
-            imagenUri = uiState.imagenUri
-        )
-
-        Spacer(modifier = Modifier.padding(top = 16.dp))
-
-
-        ProfileMenuItem(Icons.Default.Edit, "Editar Perfil", verdeNeon) {
-            navController.navigate("editar_perfil")
+    Scaffold(
+        bottomBar = {
+            BottomNavBar()
         }
+    ) { innerPadding ->
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(Color(0xFF121212))
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            UserInfoSection(
+                nombreUsuario = uiState.nombreUsuario,
+                email = uiState.email,
+                imagenUri = uiState.imagenUri
+            )
+
+            Spacer(modifier = Modifier.padding(top = 16.dp))
+
+
+            ProfileMenuItem(Icons.Default.Edit, "Editar Perfil", verdeNeon) {
+                navController.navigate("editar_perfil")
+            }
 
 
 
-        Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1f))
 
 
-        ProfileMenuItem(Icons.Default.Logout, "Cerrar Sesión", Color.Red) {
-            profileViewModel.onCerrarSesion()
+            ProfileMenuItem(Icons.Default.Logout, "Cerrar Sesión", Color.Red) {
+                profileViewModel.onCerrarSesion()
+            }
         }
     }
+
 }

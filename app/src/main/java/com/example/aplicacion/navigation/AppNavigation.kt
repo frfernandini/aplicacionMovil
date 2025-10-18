@@ -38,10 +38,6 @@ fun AppNavigation(){
             val usuarioViewModel: UsuarioViewModel = viewModel(factory = usuarioViewModelFactory)
             RegistroScreen(navController,usuarioViewModel)
         }
-        composable("resumen"){
-            val usuarioViewModel: UsuarioViewModel = viewModel(factory = usuarioViewModelFactory)
-            ResumenScreen(usuarioViewModel)
-        }
         composable("login"){
             val loginViewModel: LoginViewModel = viewModel(factory = loginViewModelFactory)
             LoginScreen(navController,loginViewModel)
