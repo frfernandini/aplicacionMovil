@@ -1,14 +1,23 @@
 package com.example.aplicacion.ui.components
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -23,8 +32,12 @@ import com.example.aplicacion.ui.theme.azulElectrico
 import com.example.aplicacion.ui.theme.blanco
 import com.example.aplicacion.ui.theme.negroGrafito
 import com.example.aplicacion.ui.screen.AccentGreen
+import com.example.aplicacion.ui.theme.verdeDarkBrillante
 import com.example.aplicacion.ui.theme.verdeNeon
+import com.example.aplicacion.ui.theme.verdeOscuro
 import com.example.aplicacion.viewmodel.ProductoViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProductCard(
@@ -35,22 +48,15 @@ fun ProductCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            //ESTO ACTIVA EL EDITOR DE PRODUCTOS
-            //.clickable { onEdit(producto) }
             .border(
                 width = 2.dp,
-                color = AccentGreen,
+                color = verdeDarkBrillante,
                 shape = RoundedCornerShape(16.dp)
             ),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = CardBackground)
     ) {
-
-
-        val imagenFondo = if (producto.imagen != 0)
-            producto.imagen
-        else
-            R.drawable.ic_launcher_background
+        val imagenFondo = if (producto.imagen != 0) producto.imagen else R.drawable.ic_launcher_background
 
         Image(
             painter = painterResource(id = imagenFondo),
@@ -89,20 +95,33 @@ fun ProductCard(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            Button(
+            //ANIMACION BOTON
+            val scope = rememberCoroutineScope()
+            var press by remember { mutableStateOf(false) }
 
+            val scale by animateFloatAsState(
+                targetValue = if (press) 0.9f else 1f,
+                animationSpec = tween(400)
+            )
+
+            Button(
                 onClick = {
-                    /*if (producto.enCarrito) {
-                        vm.quitarDelCarrito(producto)
-                    } else {
-                        vm.agregarAlCarrito(producto)
-                    }*/
-                    vm.modificarCarrito(producto)//<- Estatico
+                    //CAMBIAR EL ESTADO PARA ANIMARLO
+                    press = true
+                    //ACCION DE CARRITO
+                    vm.modificarCarrito(producto)
+                    //REINICIA EL TAMAÑO DESPUES DE 400ms
+                    scope.launch {
+                        delay(400)
+                        press = false
+                    }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .graphicsLayer(scaleX = scale, scaleY = scale),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (producto.enCarrito) Color.Red else AccentGreen
-                ),
-                modifier = Modifier.fillMaxWidth()
+                )
             ) {
                 Text(
                     text = if (producto.enCarrito) "Quitar del carrito" else "Agregar al carrito",

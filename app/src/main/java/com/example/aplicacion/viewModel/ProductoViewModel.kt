@@ -70,7 +70,7 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
 
 
     //MAP PERMITE CAMBIAR O TRANSFORMAR LOS DATOS CON LOS QUE SON ENTREGADOS
-    // EN ESTE CASO LA LISTA DE PRODUCTOS EN CARRITO
+    //EN ESTE CASO LA LISTA DE PRODUCTOS EN CARRITO
     //DE MODO QUE SEA DINAMICO PERMITIENDO EDITAR EL TOTAL DEL CARRITO CADA VES QUE SE MODIFIQUE EL CARRITO
     val totalCarrito: StateFlow<Double> = carrito
         .map { productos -> productos.sumOf { it.precio * it.cantidad }}
