@@ -36,7 +36,7 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.example.aplicacion.model.Evento
 import com.example.aplicacion.ui.components.BottomNavBar
-
+import androidx.navigation.NavController
 val listaDeEventos = listOf(
     Evento(
         nombre = "Torneo 1",
@@ -63,30 +63,30 @@ val listaDeEventos = listOf(
 
 
 @Composable
-fun EventoScreen() {
+fun EventoScreen(navContrller : NavController) {
     val ubicacionInicial = LatLng(-33.044411259247035, -71.61555125302814) // Centrar el mapa inicialmente
 
-    // Estado para controlar la cámara del mapa
+
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(ubicacionInicial, 1f) // Zoom lejano para ver el mundo
     }
 
     Scaffold(
         bottomBar = {
-            // 2. Colocamos tu BottomNavBar en la parte inferior
-            BottomNavBar()
-        }
-    ) { innerPadding -> // El contenido de la pantalla va aquí dentro
 
-        // 3. El Column principal ahora usa el padding del Scaffold
+            BottomNavBar(navContrller)
+        }
+    ) { innerPadding ->
+
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                // Esto asegura que tu contenido no se superponga con la barra de navegación
+
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            // --- SECCIÓN DEL MAPA (sin cambios) ---
+
             GoogleMap(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -184,9 +184,3 @@ private fun InfoRow(icon: ImageVector, text: String) {
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun EventoScreenPreview() {
-    EventoScreen()
-
-}

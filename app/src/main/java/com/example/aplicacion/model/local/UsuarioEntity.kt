@@ -1,6 +1,6 @@
 package com.example.aplicacion.model.local
 
-import androidx.compose.ui.input.pointer.PointerId
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 

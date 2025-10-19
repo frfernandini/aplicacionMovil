@@ -12,7 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = verdeNeon, // Decidimos usar verdeNeon como primario
+
+    primary = verdeNeon,
     secondary = azulElectrico,
     background = negroGrafito,
     surface = negroGrafito,

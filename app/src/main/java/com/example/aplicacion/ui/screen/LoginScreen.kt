@@ -36,24 +36,14 @@ fun LoginScreen(
     LaunchedEffect(key1 = uiState.loginExitoso) {
         if (uiState.loginExitoso) {
 
-            // --- INICIO DE LA CORRECCIÓN ---
 
-            // Reemplaza esto:
-            // navController.navigate("perfil")
-
-            // Por esto:
-            navController.navigate("perfil") {
-                // Limpia la pila de navegación hasta la primera pantalla del grafo.
+            navController.navigate("home") {
                 popUpTo(navController.graph.startDestinationId) {
-                    inclusive = true // También elimina la pantalla de inicio (login).
+                    inclusive = true
                 }
-                // Esto asegura que no se creen múltiples copias de la pantalla de perfil.
                 launchSingleTop = true
             }
-
-            // --- FIN DE LA CORRECCIÓN ---
-
-            loginViewModel.onNavegacionRealizada() // Esto ya lo tienes y está bien
+            loginViewModel.onNavegacionRealizada()
         }
     }
 
