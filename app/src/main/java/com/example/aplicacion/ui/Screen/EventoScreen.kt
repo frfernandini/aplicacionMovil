@@ -1,4 +1,4 @@
-package com.example.aplicacion.ui.Screen
+package com.example.aplicacion.ui.screen
 
 import android.Manifest
 import android.annotation.SuppressLint
