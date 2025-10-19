@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.aplicacion.model.ProductoErrores
 import com.example.aplicacion.model.ProductoUiState
 import com.example.aplicacion.model.local.ProductoEntity
+import com.example.aplicacion.model.local.listaProductosEstaticos
 import com.example.aplicacion.model.repository.ProductoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,6 +16,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
+
+    // Catálogo estático
+    private val _catalogo = MutableStateFlow(listaProductosEstaticos.toList())
+    val catalogo: StateFlow<List<ProductoEntity>> = _catalogo
+
 
     private val _estado = MutableStateFlow(ProductoUiState())
     //ESTADO EXPUESTO PARA LA UI
@@ -32,13 +38,33 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
         )
     //ESTO NOS PERMITE VISUALIZAR TODOS LOS PRODUCTOS AGREGADOS AL CARRITO MEDIANTE LA VARIABLE enCarrito
     //DECLARADA ANTERIORMENTE
-    val carrito: StateFlow<List<ProductoEntity>> =
+    //CARRITO DINAMICO
+    /*val carrito: StateFlow<List<ProductoEntity>> =
         repo.obtenerProdCarrito().stateIn(
             scope =viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = emptyList()
-        )
+        )*/
 
+    //Carrito derivado de catalogo(ESTATICO)
+    val carrito: StateFlow<List<ProductoEntity>> = _catalogo
+        .map { lista -> lista.filter { it.enCarrito } }
+        .stateIn(viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList())
+
+    //Función para agregar/quitar del carrito(derivado del catalogo estatico)
+    fun modificarCarrito(producto: ProductoEntity) {
+        _catalogo.value = _catalogo.value.map {
+            if (it == producto) {
+                if (!it.enCarrito) {
+                    it.copy(enCarrito = true, cantidad = 1) // Se agrega al carrito
+                } else {
+                    it.copy(enCarrito = false, cantidad = 0) // Se quita del carrito
+                }
+            } else it
+        }
+    }
     //MAP PERMITE CAMBIAR O TRANSFORMAR LOS DATOS CON LOS QUE SON ENTREGADOS
     // EN ESTE CASO LA LISTA DE PRODUCTOS EN CARRITO
     //DE MODO QUE SEA DINAMICO PERMITIENDO EDITAR EL TOTAL DEL CARRITO CADA VES QUE SE MODIFIQUE EL CARRITO
@@ -175,20 +201,32 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
     }
 
     //FUNCIONES DEL CARRITO
-    fun agregarAlCarrito(producto: ProductoEntity) = viewModelScope.launch {
+    //AJUSTAR LOS COMENTARIOS SI SE DESEA FUNCIONES DINAMICAS
+    //LA SIGUIENTE FUNCION SOLO SE UTILIZA SI SE IMPLEMENTA EL FORMULARIO
+    /*fun agregarAlCarrito(producto: ProductoEntity) = viewModelScope.launch {
         repo.agregarAlCarrito(producto)
+    }*/
+
+    fun quitarDelCarrito(producto: ProductoEntity) /*= viewModelScope.launch*/ {
+        //repo.quitarDelCarrito(producto)
+        _catalogo.value = _catalogo.value.map {
+            if (it.nombre == producto.nombre) it.copy(enCarrito = false, cantidad = 1) else it
+        }
     }
 
-    fun quitarDelCarrito(producto: ProductoEntity) = viewModelScope.launch {
-        repo.quitarDelCarrito(producto)
+    fun cambiarCantidad(producto: ProductoEntity, cantidad: Int) /*= viewModelScope.launch*/ {
+        //repo.actualizarCantidad(producto, cantidad)
+        _catalogo.value = _catalogo.value.map {
+            if (it == producto) it.copy(
+                cantidad = if (cantidad < 0) 0 else cantidad,
+                enCarrito = if (cantidad <= 0) false else true
+            ) else it
+        }
     }
 
-    fun cambiarCantidad(producto: ProductoEntity, cantidad: Int) = viewModelScope.launch {
-        repo.actualizarCantidad(producto, cantidad)
-    }
-
-    fun vaciarCarrito() = viewModelScope.launch {
-        repo.vaciarCarro()
+    fun vaciarCarrito() /*= viewModelScope.launch*/ {
+        //repo.vaciarCarro()
+        _catalogo.value = _catalogo.value.map { it.copy(enCarrito = false, cantidad = 0) }
     }
 
 

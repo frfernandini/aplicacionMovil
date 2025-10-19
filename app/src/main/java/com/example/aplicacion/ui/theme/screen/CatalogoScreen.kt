@@ -29,7 +29,6 @@ fun CatalogoScreen(
     onEdit: (ProductoEntity) -> Unit
 ) {
     val productos by vm.productos.collectAsState()
-
     Scaffold(
         floatingActionButton = { FloatingActionButton(onClick = onAdd) { Text("+") } }
     ) { padding ->
@@ -50,7 +49,6 @@ fun CatalogoScreen(
                             .clickable { onEdit(p) }
                             .padding(horizontal = 8.dp)
                     )
-                    //Divider()
                 }
             }
     }

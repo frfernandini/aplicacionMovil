@@ -28,7 +28,7 @@ fun AppNavigation(vm: ProductoViewModel) {
             )
         }
         //FORMULARIO PRODUCTO
-        composable("formProducto") {
+        /*composable("formProducto") {
             FormProductScreen(
                 vm = vm,
                 onBack = {
@@ -56,7 +56,7 @@ fun AppNavigation(vm: ProductoViewModel) {
                     navController.popBackStack()
                 }
             )
-        }
+        }*/
         //CARRITO
         composable("carrito") {
             CarritoScreen(

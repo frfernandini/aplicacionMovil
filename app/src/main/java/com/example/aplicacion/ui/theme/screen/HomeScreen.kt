@@ -23,8 +23,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.aplicacion.R
 import com.example.aplicacion.model.local.ProductoEntity
+import com.example.aplicacion.model.local.listaProductosEstaticos
 import com.example.aplicacion.ui.components.ProductSection
 import com.example.aplicacion.ui.components.TopBar
+import com.example.aplicacion.ui.theme.azulElectrico
 import com.example.aplicacion.ui.theme.components.BottomNavBar
 import com.example.aplicacion.viewModel.ProductoViewModel
 
@@ -42,25 +44,29 @@ fun HomeScreen(
     navController: NavController,
     productoViewModel: ProductoViewModel
 ) {
-    val productos by productoViewModel.productos.collectAsState()
+    //LISTADO DINAMICO DE PRODUCTOS
+    //ACTIVAR SI SE DESEA IMPLEMENTAR EL FORMULARIO
+    //val productos by productoViewModel.productos.collectAsState()
 
+    //LISTADO ESTATICO DE PRODUCTOS
+    val productos by productoViewModel.catalogo.collectAsState()
     Scaffold(
         topBar = { TopBar(navController = navController) },
         bottomBar = { BottomNavBar() },
-        floatingActionButton = {
+        //FORMULARIO DEL PRODUCTO
+        /*floatingActionButton = {
             FloatingActionButton(
                 onClick = { navController.navigate("formProducto") },
                 containerColor = AccentGreen
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Agregar Producto")
             }
-        },
+        },*/
         containerColor = DarkBackground
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
         ) {
             BannerCarousel()
 
@@ -78,7 +84,7 @@ fun HomeScreen(
             } else {
                 Text(
                     "No hay productos disponibles",
-                    color = TextColorSecondary,
+                    color = azulElectrico,
                     modifier = Modifier.padding(16.dp)
                 )
             }
@@ -89,7 +95,7 @@ fun HomeScreen(
 @Composable
 fun BannerCarousel() {
     Image(
-        painter = painterResource(id = R.drawable.imagen_banner_1),
+        painter = painterResource(id = R.drawable.banner),
         contentDescription = "Banner Promocional",
         modifier = Modifier
             .fillMaxWidth()

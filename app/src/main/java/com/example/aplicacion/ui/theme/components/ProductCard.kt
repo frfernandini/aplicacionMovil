@@ -29,7 +29,10 @@ import com.example.aplicacion.model.local.ProductoEntity
 import com.example.aplicacion.ui.theme.screen.CardBackground
 import com.example.aplicacion.ui.theme.screen.TextColor
 import com.example.aplicacion.R
+import com.example.aplicacion.ui.theme.azulElectrico
+import com.example.aplicacion.ui.theme.negroGrafito
 import com.example.aplicacion.ui.theme.screen.AccentGreen
+import com.example.aplicacion.ui.theme.verdeNeon
 import com.example.aplicacion.viewModel.ProductoViewModel
 
 @Composable
@@ -41,7 +44,8 @@ fun ProductCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onEdit(producto) }
+            //ESTO ACTIVA EL EDITOR DE PRODUCTOS
+            //.clickable { onEdit(producto) }
             .border(
                 width = 2.dp,
                 color = AccentGreen,
@@ -72,21 +76,22 @@ fun ProductCard(
         Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
             Text(
                 text = producto.nombre,
-                color = TextColor,
+                fontSize = 15.sp,
+                color = azulElectrico,
                 fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = producto.descripcion,
                 color = TextColor,
                 fontWeight = FontWeight.SemiBold,
-                maxLines = 2,
+                maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = "$${String.format("%.2f", producto.precio)}",
-                color = TextColor,
+                color = verdeNeon,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(top = 4.dp)
@@ -95,12 +100,14 @@ fun ProductCard(
             Spacer(modifier = Modifier.height(10.dp))
 
             Button(
+                //PARA EL CATALOGO DINAMICO AJUSTAR LOS COMENTARIOS
                 onClick = {
-                    if (producto.enCarrito) {
+                    /*if (producto.enCarrito) {
                         vm.quitarDelCarrito(producto)
                     } else {
                         vm.agregarAlCarrito(producto)
-                    }
+                    }*/
+                    vm.modificarCarrito(producto)//<- Estatico
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (producto.enCarrito) Color.Red else AccentGreen
@@ -109,7 +116,7 @@ fun ProductCard(
             ) {
                 Text(
                     text = if (producto.enCarrito) "Quitar del carrito" else "Agregar al carrito",
-                    color = Color.White
+                    color = negroGrafito
                 )
             }
         }
