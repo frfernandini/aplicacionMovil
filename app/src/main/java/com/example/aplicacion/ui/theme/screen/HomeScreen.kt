@@ -32,6 +32,9 @@ import com.example.aplicacion.ui.components.ProductSection
 import com.example.aplicacion.ui.components.TopBar
 import com.example.aplicacion.ui.theme.azulElectrico
 import com.example.aplicacion.ui.theme.components.BottomNavBar
+import com.example.aplicacion.ui.theme.grisClaro
+import com.example.aplicacion.ui.theme.negroGrafito
+import com.example.aplicacion.ui.theme.verdeNeon
 import com.example.aplicacion.viewModel.ProductoViewModel
 
 // --- Paleta de Colores y Tema (Basado en la Imagen) ---
@@ -48,32 +51,18 @@ fun HomeScreen(
     navController: NavController,
     productoViewModel: ProductoViewModel
 ) {
-    //LISTADO DINAMICO DE PRODUCTOS
-    //ACTIVAR SI SE DESEA IMPLEMENTAR EL FORMULARIO
-    //val productos by productoViewModel.productos.collectAsState()
-
-    //LISTADO ESTATICO DE PRODUCTOS
     val productos by productoViewModel.catalogo.collectAsState()
     val categoriaSeleccionada by productoViewModel.busquedaCategoria.collectAsState()
 
-    //ACA SE FILTRAN LOS PRODUCTOS SEGUN LA CATEGORIA SELECCIONADA
-    val productosFiltrados =
-        if (categoriaSeleccionada.isEmpty())
+    val filtradoProductos =
+        if (categoriaSeleccionada.isEmpty())//<- Devolvera la lista completa en caso de que no alla una categoria seleccionada
             productos
         else
-            productos.filter { it.categoria == categoriaSeleccionada }
+            productos.filter { it.categoria == categoriaSeleccionada }//<- Aplicara el filtro correspondiente
+
     Scaffold(
         topBar = { TopBar(navController = navController) },
         bottomBar = { BottomNavBar() },
-        //FORMULARIO DEL PRODUCTO
-        /*floatingActionButton = {
-            FloatingActionButton(
-                onClick = { navController.navigate("formProducto") },
-                containerColor = AccentGreen
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Agregar Producto")
-            }
-        },*/
         containerColor = DarkBackground
     ) { innerPadding ->
         Column(
@@ -82,14 +71,20 @@ fun HomeScreen(
         ) {
             BannerCarousel()
 
-            if (productos.isNotEmpty()) {
+            //BOTONES DE CATEGORIA
+            Categoria(
+                catalogo = productos,
+                categoriaSeleccionada = categoriaSeleccionada,
+                onCategoriaSelected = { productoViewModel.onCategoriaBusquedaChange(it) }
+            )
+
+            if (filtradoProductos.isNotEmpty()) {
                 ProductSection(
                     title = "Productos Disponibles",
-                    productos = productos,
+                    productos = filtradoProductos,
                     vm = productoViewModel,
                     onEdit = { producto ->
-                        productoViewModel.cargarProdParaEditar(producto) //<- Nos Sirve para llenar el formulario
-                                                                        // con la informacion correspondiente del producto
+                        productoViewModel.cargarProdParaEditar(producto)
                         navController.navigate("formProducto")
                     }
                 )
@@ -117,4 +112,42 @@ fun BannerCarousel() {
             .clip(RoundedCornerShape(16.dp)),
         contentScale = ContentScale.Crop
     )
+}
+
+@Composable
+fun Categoria(
+    catalogo: List<ProductoEntity>,
+    categoriaSeleccionada: String,
+    onCategoriaSelected: (String) -> Unit
+) {
+    val categorias = catalogo.map { it.categoria }.distinct()
+
+    Row(
+        modifier = Modifier
+            .horizontalScroll(rememberScrollState())
+            .padding(8.dp)
+    ) {
+        //BOTON TODAS
+        Button(
+            onClick = { onCategoriaSelected("") },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (categoriaSeleccionada.isBlank()) verdeNeon else grisClaro
+            ),
+            modifier = Modifier.padding(end = 8.dp)
+        ) {
+            Text("Todas", color = negroGrafito)
+        }
+
+        categorias.forEach { categoria ->
+            Button(
+                onClick = { onCategoriaSelected(categoria) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (categoria == categoriaSeleccionada) verdeNeon else grisClaro
+                ),
+                modifier = Modifier.padding(end = 8.dp)
+            ) {
+                Text(categoria,color = negroGrafito)
+            }
+        }
+    }
 }

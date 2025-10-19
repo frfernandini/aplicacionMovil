@@ -20,9 +20,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
 import com.example.aplicacion.model.local.ProductoEntity
 import com.example.aplicacion.viewModel.ProductoViewModel
 import com.example.aplicacion.R
+import com.example.aplicacion.ui.theme.azulElectrico
+import com.example.aplicacion.ui.theme.grisClaro
+import com.example.aplicacion.ui.theme.negroGrafito
+import com.example.aplicacion.ui.theme.verdeNeon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,42 +36,50 @@ fun CarritoScreen(vm: ProductoViewModel, onBack: () -> Unit) {
     val total by vm.totalCarrito.collectAsState()
 
     Scaffold(
+        containerColor = negroGrafito,
         topBar = {
             TopAppBar(
-                title = { Text("Carrito") },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, contentDescription = "Volver") } },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = negroGrafito),
+                title = { Text("Carrito", color = azulElectrico) },
+                navigationIcon = { IconButton(onClick = onBack)
+                { Icon(Icons.Default.ArrowBack, contentDescription = "Volver", tint = azulElectrico) } },
                 actions = {
                     if (carrito.isNotEmpty()) {
                         IconButton(onClick = { vm.vaciarCarrito() }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Vaciar carrito")
+                            Icon(Icons.Default.Delete, contentDescription = "Vaciar carrito", tint = Color.Red)
                         }
                     }
-                }
+                },
             )
         },
         bottomBar = {
             if (carrito.isNotEmpty()) {
-                // Material3: content lambda en BottomAppBar
                 BottomAppBar(
                     modifier = Modifier.height(60.dp),
-                    containerColor = Color.DarkGray
+                    containerColor = verdeNeon
                 ) {
                     Row(
                         Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Total: $${"%.2f".format(total)}", color = Color.White)
-                        Button(onClick = {
-                            // Aca iria la logica real de pago
-                            println("Pago aún no implementado")
-                        }) {
+                        Text("Total: $${"%.2f".format(total)}", color = Color.Blue, fontSize = 25.sp)
+                        Button(
+                            onClick = {
+                                //AQUI IRIA LA LOGICA DE PAGO
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = azulElectrico
+                            )
+                        ) {
                             Text("Pagar")
                         }
                     }
                 }
             }
         }
+
     ) { padding ->
         if (carrito.isEmpty()) {
             Box(
@@ -75,7 +88,7 @@ fun CarritoScreen(vm: ProductoViewModel, onBack: () -> Unit) {
                     .padding(padding),
                 contentAlignment = Alignment.Center
             ) {
-                Text("CARRITO VACIO")
+                Text("CARRITO VACIO", color = Color.Red)
             }
         } else {
             LazyColumn(
@@ -108,7 +121,8 @@ fun CarritoItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(4.dp),
+        colors = CardDefaults.cardColors(containerColor = grisClaro)
     ) {
         Row(
             Modifier
@@ -126,14 +140,14 @@ fun CarritoItem(
             )
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text(producto.nombre, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
-                Text("Precio: $${producto.precio}")
-                Text("Subtotal: $${"%.2f".format(producto.precio * producto.cantidad)}")
+                Text(producto.nombre, maxLines = 2, fontSize = 20.sp)
+                Text("Precio: $${producto.precio}",fontSize = 16.sp)
+                Text("Subtotal: $${"%.2f".format(producto.precio * producto.cantidad)}",fontSize = 16.sp)
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = onDisminuir) { Text("-") }
-                Text("${producto.cantidad}", modifier = Modifier.padding(horizontal = 4.dp))
-                IconButton(onClick = onAumentar) { Text("+") }
+                IconButton(onClick = onDisminuir) { Text("-",fontSize = 25.sp, color = Color.Red) }
+                Text("${producto.cantidad}", modifier = Modifier.padding(horizontal = 4.dp), fontSize = 20.sp)
+                IconButton(onClick = onAumentar) { Text("+",fontSize = 25.sp, color = verdeNeon) }
                 IconButton(onClick = onEliminar) { Icon(Icons.Default.Delete, contentDescription = "Eliminar") }
             }
         }

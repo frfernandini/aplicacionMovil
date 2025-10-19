@@ -65,6 +65,12 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
             } else it
         }
     }
+
+    // Función para cambiar la categoría seleccionada
+    fun seleccionarCategoria(categoria: String) {
+        _busquedaCategoria.value = categoria
+    }
+
     //MAP PERMITE CAMBIAR O TRANSFORMAR LOS DATOS CON LOS QUE SON ENTREGADOS
     // EN ESTE CASO LA LISTA DE PRODUCTOS EN CARRITO
     //DE MODO QUE SEA DINAMICO PERMITIENDO EDITAR EL TOTAL DEL CARRITO CADA VES QUE SE MODIFIQUE EL CARRITO
@@ -99,34 +105,24 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
     fun onEnCarritoCharge(valor: Boolean){
         _estado.update { it.copy(enCarrito = valor) }
     }
-
+    //CATEGORIA(LISTA ESTATICA)
     fun onCategoriaBusquedaChange(valor: String) {
         _busquedaCategoria.value = valor
     }
 
-    //VALIDAR EL FILTRADO DE PRODUCTOS DEL BUSCADOR DESDE EL COMPOSE
-    /*val productosFiltrados = if (categoria.isBlank()) {
-        productos
-    } else {
-        val filtrados = productos.filter {it.categoria.contains(categoria, ignoreCase = true)}
-
-        if (filtrados.isEmpty()) productos else filtrados
-    }*/
-
     fun limpiarFormProd() = run { _estado.value = ProductoUiState() }
 
     fun validarProducto(): Boolean {
-        val estadoActual = _estado.value
         val precioDouble = _estado.value.precio.toDoubleOrNull()?: 0.0
 
         val errores = ProductoErrores(
             nombre =
-                if(estadoActual.nombre.isBlank())
+                if(_estado.value.nombre.isBlank())
                     "El Campo Es Obligatorio"
                 else
                     null,
             descripcion =
-                if(estadoActual.descripcion.isBlank())
+                if(_estado.value.descripcion.isBlank())
                     "El Campo Es Obligatorio"
                 else
                     null,
@@ -136,12 +132,12 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
                 else
                     null,
             imagen =
-                if(estadoActual.imagen == null)
+                if(_estado.value.imagen == null)
                     "La imagen es obligatoria"
                 else
                     null,
             categoria =
-                if(estadoActual.categoria.isBlank())
+                if(_estado.value.categoria.isBlank())
                     "El Campo Es Obligatorio"
                 else
                     null,
@@ -176,19 +172,16 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
         val precioDouble = _estado.value.precio.toDoubleOrNull() ?: 0.0
 
         if (validarProducto()) {
-            // Crear producto base
             var producto = ProductoEntity(
-                nombre = estado.value.nombre,
-                descripcion = estado.value.descripcion,
+                id = _estado.value.id,
+                nombre = _estado.value.nombre,
+                descripcion = _estado.value.descripcion,
                 precio = precioDouble,
-                imagen = estado.value.imagen,
-                categoria = estado.value.categoria
+                imagen = _estado.value.imagen,
+                categoria = _estado.value.categoria
             )
 
-            // Si estamos editando, asignamos el id existente
-            _estado.value.id.takeIf { it != 0 }?.let { id ->
-                producto = producto.copy(id = id)
-            }
+            //SI ESTA EDITANDO SE ASIGNA EL ID EXISTENTE
 
             viewModelScope.launch {
                 repo.guardar(producto)

@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.aplicacion.model.local.ProductoEntity
 import com.example.aplicacion.viewModel.ProductoViewModel
 
@@ -36,13 +37,13 @@ fun CatalogoScreen(
                 items(productos) { p ->
                     ListItem(
                         headlineContent = {
-                            Text(p.nombre, fontWeight = FontWeight.Bold)
+                            Text(p.nombre)
                         },
                         supportingContent = {
-                            Text("${p.descripcion} • ${p.categoria}")
+                            Text("${p.descripcion}")
                         },
                         trailingContent = {
-                            Text(String.format("$%.2f", p.precio))
+                            Text(String.format("$%.2f", p.precio,), fontSize = 25.sp)
                         },
                         modifier = Modifier
                             .fillMaxWidth()

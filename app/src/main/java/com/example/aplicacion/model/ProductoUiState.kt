@@ -1,7 +1,7 @@
 package com.example.aplicacion.model
 
 data class ProductoUiState(
-    val id: Int? = null,
+    val id: Int = 0,
     val nombre: String = "",
     val descripcion: String = "",
     val precio: String = "",
