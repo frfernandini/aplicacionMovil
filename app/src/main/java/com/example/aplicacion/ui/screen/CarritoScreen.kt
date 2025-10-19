@@ -44,7 +44,6 @@ fun CarritoScreen(
     val carrito by vm.carrito.collectAsState()
     val total by vm.totalCarrito.collectAsState()
 
-    // Estado local para simular carga
     var isLoading by remember { mutableStateOf(true) }
 
     // Simula que carga al entrar
