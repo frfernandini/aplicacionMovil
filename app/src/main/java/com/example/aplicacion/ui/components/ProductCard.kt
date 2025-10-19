@@ -16,13 +16,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.aplicacion.model.local.ProductoEntity
-import com.example.aplicacion.ui.theme.screen.CardBackground
-import com.example.aplicacion.ui.theme.screen.TextColor
+import com.example.aplicacion.ui.screen.CardBackground
+import com.example.aplicacion.ui.screen.TextColor
 import com.example.aplicacion.R
 import com.example.aplicacion.ui.theme.azulElectrico
 import com.example.aplicacion.ui.theme.blanco
 import com.example.aplicacion.ui.theme.negroGrafito
-import com.example.aplicacion.ui.theme.screen.AccentGreen
+import com.example.aplicacion.ui.screen.AccentGreen
 import com.example.aplicacion.ui.theme.verdeNeon
 import com.example.aplicacion.viewModel.ProductoViewModel
 
@@ -46,8 +46,7 @@ fun ProductCard(
         colors = CardDefaults.cardColors(containerColor = CardBackground)
     ) {
 
-        //EN CASO DE SER QUE LA IMAGEN SEA 0(NO ALLA UNA IMAGEN)
-        //SE LE DEFINIRA UN FONDO POR DEFECTO PARA EVITAR CRASHEO
+
         val imagenFondo = if (producto.imagen != 0)
             producto.imagen
         else
@@ -91,7 +90,7 @@ fun ProductCard(
             Spacer(modifier = Modifier.height(10.dp))
 
             Button(
-                //PARA EL CATALOGO DINAMICO AJUSTAR LOS COMENTARIOS
+
                 onClick = {
                     /*if (producto.enCarrito) {
                         vm.quitarDelCarrito(producto)

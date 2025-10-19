@@ -1,8 +1,7 @@
-package com.example.aplicacion.ui.theme.components
+package com.example.aplicacion.ui.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
@@ -15,7 +14,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.example.aplicacion.ui.theme.screen.*
+import com.example.aplicacion.ui.screen.AccentGreen
+import com.example.aplicacion.ui.screen.CardBackground
+import com.example.aplicacion.ui.screen.TextColorSecondary
 
 
 @Composable
@@ -39,22 +40,10 @@ fun BottomNavBar() {
                 indicatorColor = CardBackground
             )
         )
+
         NavigationBarItem(
             selected = selectedItem == 1,
             onClick = { selectedItem = 1 },
-            icon = { Icon(Icons.Default.List, contentDescription = "Categorías") },
-            label = { Text("Categorías") },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = AccentGreen,
-                selectedTextColor = AccentGreen,
-                unselectedIconColor = TextColorSecondary,
-                unselectedTextColor = TextColorSecondary,
-                indicatorColor = CardBackground
-            )
-        )
-        NavigationBarItem(
-            selected = selectedItem == 2,
-            onClick = { selectedItem = 2 },
             icon = { Icon(Icons.Default.Star, contentDescription = "Eventos") },
             label = { Text("Eventos") },
             colors = NavigationBarItemDefaults.colors(
@@ -66,8 +55,8 @@ fun BottomNavBar() {
             )
         )
         NavigationBarItem(
-            selected = selectedItem == 3,
-            onClick = { selectedItem = 3 },
+            selected = selectedItem == 2,
+            onClick = { selectedItem = 2 },
             icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
             label = { Text("Perfil") },
             colors = NavigationBarItemDefaults.colors(

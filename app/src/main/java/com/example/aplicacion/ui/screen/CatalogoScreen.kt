@@ -1,4 +1,4 @@
-package com.example.aplicacion.ui.theme.screen
+package com.example.aplicacion.ui.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize

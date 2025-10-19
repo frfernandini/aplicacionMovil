@@ -14,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.aplicacion.model.local.ProductoEntity
-import com.example.aplicacion.ui.theme.screen.TextColor
+import com.example.aplicacion.ui.screen.TextColor
 import com.example.aplicacion.viewModel.ProductoViewModel
 
 @Composable

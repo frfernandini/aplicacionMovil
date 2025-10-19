@@ -4,10 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.aplicacion.model.local.ProductoEntity
-import com.example.aplicacion.ui.theme.screen.CarritoScreen
-import com.example.aplicacion.ui.theme.screen.FormProductScreen
-import com.example.aplicacion.ui.theme.screen.HomeScreen
+import com.example.aplicacion.ui.screen.CarritoScreen
+import com.example.aplicacion.ui.screen.HomeScreen
 import com.example.aplicacion.viewModel.ProductoViewModel
 
 

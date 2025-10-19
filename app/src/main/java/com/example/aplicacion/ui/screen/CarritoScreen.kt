@@ -1,4 +1,4 @@
-package com.example.aplicacion.ui.theme.screen
+package com.example.aplicacion.ui.screen
 
 
 import androidx.compose.foundation.Image
