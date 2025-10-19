@@ -21,9 +21,7 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
     private val _catalogo = MutableStateFlow(listaProductosEstaticos.toList())
     val catalogo: StateFlow<List<ProductoEntity>> = _catalogo
 
-
     private val _estado = MutableStateFlow(ProductoUiState())
-
     val estado: StateFlow<ProductoUiState> = _estado
 
     private val _busquedaCategoria = MutableStateFlow("")
@@ -36,6 +34,10 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = emptyList()
         )
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
     //ESTO NOS PERMITE VISUALIZAR TODOS LOS PRODUCTOS AGREGADOS AL CARRITO MEDIANTE LA VARIABLE enCarrito
     //DECLARADA ANTERIORMENTE
     //CARRITO DINAMICO
@@ -66,10 +68,6 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
         }
     }
 
-    // Función para cambiar la categoría seleccionada
-    fun seleccionarCategoria(categoria: String) {
-        _busquedaCategoria.value = categoria
-    }
 
     //MAP PERMITE CAMBIAR O TRANSFORMAR LOS DATOS CON LOS QUE SON ENTREGADOS
     // EN ESTE CASO LA LISTA DE PRODUCTOS EN CARRITO
@@ -222,6 +220,6 @@ class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
         _catalogo.value = _catalogo.value.map { it.copy(enCarrito = false, cantidad = 0) }
     }
 
-
-    fun eliminarProducto(producto: ProductoEntity) = viewModelScope.launch { repo.eliminar(producto) }
+    //SOLO PARA FORMULARIO IMPLEMENTADO
+    /*fun eliminarProducto(producto: ProductoEntity) = viewModelScope.launch { repo.eliminar(producto) }*/
 }

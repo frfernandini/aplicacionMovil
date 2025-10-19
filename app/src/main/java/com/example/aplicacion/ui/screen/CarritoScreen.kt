@@ -11,8 +11,12 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,16 +28,30 @@ import androidx.compose.ui.unit.sp
 import com.example.aplicacion.model.local.ProductoEntity
 import com.example.aplicacion.viewmodel.ProductoViewModel
 import com.example.aplicacion.R
+import com.example.aplicacion.ui.components.Loader
 import com.example.aplicacion.ui.theme.azulElectrico
 import com.example.aplicacion.ui.theme.grisClaro
 import com.example.aplicacion.ui.theme.negroGrafito
 import com.example.aplicacion.ui.theme.verdeNeon
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CarritoScreen(vm: ProductoViewModel, onBack: () -> Unit) {
+fun CarritoScreen(
+    vm: ProductoViewModel,
+    onBack: () -> Unit
+) {
     val carrito by vm.carrito.collectAsState()
     val total by vm.totalCarrito.collectAsState()
+
+    // Estado local para simular carga
+    var isLoading by remember { mutableStateOf(true) }
+
+    // Simula que carga al entrar
+    LaunchedEffect(Unit) {
+        delay(1000)
+        isLoading = false
+    }
 
     Scaffold(
         containerColor = negroGrafito,
@@ -54,23 +72,23 @@ fun CarritoScreen(vm: ProductoViewModel, onBack: () -> Unit) {
             )
         },
         bottomBar = {
-            if (carrito.isNotEmpty()) {
+            if (!isLoading && carrito.isNotEmpty()) {
                 BottomAppBar(
                     modifier = Modifier.height(60.dp),
-                    containerColor = verdeNeon
+                    containerColor = Color.DarkGray
                 ) {
                     Row(
                         Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Total: $${"%.2f".format(total)}", color = Color.Blue, fontSize = 25.sp)
+                        Text("Total: $${"%.2f".format(total)}", color = azulElectrico, fontSize = 25.sp)
                         Button(
                             onClick = {
 
                             },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = azulElectrico
+                                containerColor = Color.Blue
                             )
                         ) {
                             Text("Pagar")
@@ -81,28 +99,32 @@ fun CarritoScreen(vm: ProductoViewModel, onBack: () -> Unit) {
         }
 
     ) { padding ->
-        if (carrito.isEmpty()) {
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("CARRITO VACIO", color = Color.Red)
-            }
+        if (isLoading) {
+            Loader()
         } else {
-            LazyColumn(
-                Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-            ) {
-                items(carrito) { producto ->
-                    CarritoItem(
-                        producto,
-                        onAumentar = { vm.cambiarCantidad(producto, producto.cantidad + 1) },
-                        onDisminuir = { vm.cambiarCantidad(producto, producto.cantidad - 1) },
-                        onEliminar = { vm.quitarDelCarrito(producto) }
-                    )
+            if (carrito.isEmpty()) {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("CARRITO VACIO", color = Color.Red)
+                }
+            } else {
+                LazyColumn(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                ) {
+                    items(carrito) { producto ->
+                        CarritoItem(
+                            producto,
+                            onAumentar = { vm.cambiarCantidad(producto, producto.cantidad + 1) },
+                            onDisminuir = { vm.cambiarCantidad(producto, producto.cantidad - 1) },
+                            onEliminar = { vm.quitarDelCarrito(producto) }
+                        )
+                    }
                 }
             }
         }
@@ -140,15 +162,15 @@ fun CarritoItem(
             )
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text(producto.nombre, maxLines = 2, fontSize = 20.sp)
-                Text("Precio: $${producto.precio}",fontSize = 16.sp)
-                Text("Subtotal: $${"%.2f".format(producto.precio * producto.cantidad)}",fontSize = 16.sp)
+                Text(producto.nombre, maxLines = 2, fontSize = 20.sp, color = azulElectrico)
+                Text("Precio: $${producto.precio}",fontSize = 16.sp, color = negroGrafito)
+                Text("Subtotal: $${"%.2f".format(producto.precio * producto.cantidad)}",fontSize = 16.sp, color = negroGrafito)
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onDisminuir) { Text("-",fontSize = 25.sp, color = Color.Red) }
-                Text("${producto.cantidad}", modifier = Modifier.padding(horizontal = 4.dp), fontSize = 20.sp)
+                Text("${producto.cantidad}", modifier = Modifier.padding(horizontal = 4.dp), fontSize = 20.sp, color = Color.Black)
                 IconButton(onClick = onAumentar) { Text("+",fontSize = 25.sp, color = verdeNeon) }
-                IconButton(onClick = onEliminar) { Icon(Icons.Default.Delete, contentDescription = "Eliminar") }
+                IconButton(onClick = onEliminar) { Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.DarkGray) }
             }
         }
     }
