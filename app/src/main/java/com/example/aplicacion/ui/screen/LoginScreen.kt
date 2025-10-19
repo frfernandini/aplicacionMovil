@@ -35,8 +35,6 @@ fun LoginScreen(
 
     LaunchedEffect(key1 = uiState.loginExitoso) {
         if (uiState.loginExitoso) {
-
-
             navController.navigate("home") {
                 popUpTo(navController.graph.startDestinationId) {
                     inclusive = true

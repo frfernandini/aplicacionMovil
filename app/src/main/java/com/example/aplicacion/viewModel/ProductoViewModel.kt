@@ -17,13 +17,13 @@ import kotlinx.coroutines.launch
 
 class ProductoViewModel(private val repo: ProductoRepository): ViewModel() {
 
-    // Catálogo estático
+
     private val _catalogo = MutableStateFlow(listaProductosEstaticos.toList())
     val catalogo: StateFlow<List<ProductoEntity>> = _catalogo
 
 
     private val _estado = MutableStateFlow(ProductoUiState())
-    //ESTADO EXPUESTO PARA LA UI
+
     val estado: StateFlow<ProductoUiState> = _estado
 
     private val _busquedaCategoria = MutableStateFlow("")

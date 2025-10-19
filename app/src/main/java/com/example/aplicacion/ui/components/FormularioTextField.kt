@@ -22,7 +22,6 @@ fun FormularioTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     isPasswordToggle: Boolean = false
 ) {
-    // Definimos los colores aquí, para que sean consistentes
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedContainerColor = MaterialTheme.colorScheme.surface,
         unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -45,7 +44,6 @@ fun FormularioTextField(
         modifier = Modifier.fillMaxWidth(),
         colors = textFieldColors,
         singleLine = true,
-        // 'isError' le dice al componente que use los colores de error definidos arriba
         isError = isError,
         supportingText = errorMessage,
         visualTransformation = if (isPasswordToggle) PasswordVisualTransformation() else VisualTransformation.None,

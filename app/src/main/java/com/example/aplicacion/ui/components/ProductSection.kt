@@ -34,7 +34,7 @@ fun ProductSection(
         )
         Spacer(modifier = Modifier.height(12.dp))
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),//<- Esto permite agregar 2 productos por fila
+            columns = GridCells.Fixed(2),//
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)

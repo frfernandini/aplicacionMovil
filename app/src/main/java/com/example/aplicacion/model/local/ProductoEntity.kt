@@ -13,6 +13,5 @@ data class ProductoEntity(
     val imagen: Int,
     val categoria: String,
     val cantidad: Int = 1,
-    //ESTADO PARA LA VALIDACION EN EL CARRITO
     val enCarrito: Boolean = false
 )

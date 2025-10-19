@@ -67,7 +67,7 @@ fun CarritoScreen(vm: ProductoViewModel, onBack: () -> Unit) {
                         Text("Total: $${"%.2f".format(total)}", color = Color.Blue, fontSize = 25.sp)
                         Button(
                             onClick = {
-                                //AQUI IRIA LA LOGICA DE PAGO
+
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = azulElectrico

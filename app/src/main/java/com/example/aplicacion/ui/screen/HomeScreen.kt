@@ -17,7 +17,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.example.aplicacion.R
 import com.example.aplicacion.model.local.ProductoEntity
 import com.example.aplicacion.ui.components.ProductSection
@@ -29,13 +28,11 @@ import com.example.aplicacion.ui.theme.negroGrafito
 import com.example.aplicacion.ui.theme.verdeNeon
 import com.example.aplicacion.viewmodel.ProductoViewModel
 
-// --- Paleta de Colores y Tema (Basado en la Imagen) ---
+
 val DarkBackground = Color(0xFF1f1f1f)
 val CardBackground = Color(0xFF1E1E1E)
 val AccentGreen = Color(0xFF39FF14)
-val AccentBlue = Color(0xFF1E90FF)
 val TextColor = Color.White
-val TextColorSecondary = Color.Gray
 
 
 @Composable
@@ -47,10 +44,10 @@ fun HomeScreen(
     val categoriaSeleccionada by productoViewModel.busquedaCategoria.collectAsState()
 
     val filtradoProductos =
-        if (categoriaSeleccionada.isEmpty())//<- Devolvera la lista completa en caso de que no alla una categoria seleccionada
+        if (categoriaSeleccionada.isEmpty())
             productos
         else
-            productos.filter { it.categoria == categoriaSeleccionada }//<- Aplicara el filtro correspondiente
+            productos.filter { it.categoria == categoriaSeleccionada }
 
     Scaffold(
         topBar = { TopBar(navController = navController) },
@@ -62,8 +59,6 @@ fun HomeScreen(
                 .padding(innerPadding)
         ) {
             BannerCarousel()
-
-            //BOTONES DE CATEGORIA
             Categoria(
                 catalogo = productos,
                 categoriaSeleccionada = categoriaSeleccionada,
@@ -119,7 +114,6 @@ fun Categoria(
             .horizontalScroll(rememberScrollState())
             .padding(8.dp)
     ) {
-        //BOTON TODAS
         Button(
             onClick = { onCategoriaSelected("") },
             colors = ButtonDefaults.buttonColors(

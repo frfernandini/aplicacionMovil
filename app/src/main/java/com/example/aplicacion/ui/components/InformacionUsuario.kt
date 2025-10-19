@@ -31,25 +31,25 @@ fun UserInfoSection(
     Image(
         painter = rememberAsyncImagePainter(
             model = if (imagenUri.isNotEmpty()) {
-                imagenUri.toUri() // Carga la URI del usuario si existe
+                imagenUri.toUri()
             } else {
-                R.drawable.logo_level_up // Muestra el logo por defecto si no hay foto
+                R.drawable.logo_level_up
             }
         ),
         contentDescription = "Avatar de usuario",
-        contentScale = ContentScale.Crop, // Asegura que la imagen llene el círculo
+        contentScale = ContentScale.Crop,
         modifier = Modifier
             .size(100.dp)
-            .clip(CircleShape) // Corta la imagen en forma de círculo
+            .clip(CircleShape)
             .border(2.dp, Color(0xFF00BFFF), CircleShape)
     )
     Spacer(modifier = Modifier.height(16.dp))
 
-    // 2. Usa los parámetros en los Text
+
     Text(text = nombreUsuario, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
     Text(text = email, fontSize = 16.sp, color = Color.Gray)
 
-    // Los datos estáticos pueden permanecer igual
+
     Spacer(modifier = Modifier.height(24.dp))
     Text("Nivel 15", fontSize = 18.sp, color = Color.White)
     Text("12.500 Puntos LevelUp", fontSize = 18.sp, color = Color.White)

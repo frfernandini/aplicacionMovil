@@ -1,98 +1,143 @@
 package com.example.aplicacion.ui.Screen
 
-
+import android.Manifest
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.aplicacion.R
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.rememberCameraPositionState
 import com.example.aplicacion.model.Evento
 import com.example.aplicacion.ui.components.BottomNavBar
-import androidx.navigation.NavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.MultiplePermissionsState
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.*
+import com.google.android.gms.maps.CameraUpdateFactory
+
+
 val listaDeEventos = listOf(
     Evento(
         nombre = "Torneo 1",
         fecha = "25 de Octubre, 2025",
         lugar = "DUOCUC",
-        imagenResId = R.drawable.logo_level_up, // Reemplaza con tus imágenes
-        ubicacion = LatLng(-33.044411259247035, -71.61555125302814) // Buenos Aires
+        imagenResId = R.drawable.logo_level_up,
+        ubicacion = LatLng(-33.044411259247035, -71.61555125302814)
     ),
     Evento(
         nombre = "Evento 1",
         fecha = "15 de Noviembre, 2025",
         lugar = "DUOCUC",
-        imagenResId = R.drawable.logo_level_up, // Reemplaza con tus imágenes
-        ubicacion = LatLng(-33.044411259247035, -71.61555125302814) // Nueva York
+        imagenResId = R.drawable.logo_level_up,
+        ubicacion = LatLng(-33.044411259247035, -71.61555125302814)
     ),
     Evento(
         nombre = "Torneo 3",
         fecha = "5 de Diciembre, 2025",
         lugar = "DUOCUC",
-        imagenResId = R.drawable.logo_level_up, // Reemplaza con tus imágenes
-        ubicacion = LatLng(-33.044411259247035, -71.61555125302814) // París
+        imagenResId = R.drawable.logo_level_up,
+        ubicacion = LatLng(-33.044411259247035, -71.61555125302814)
     )
 )
 
-
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class) // Anotaciones combinadas
 @Composable
-fun EventoScreen(navContrller : NavController) {
-    val ubicacionInicial = LatLng(-33.044411259247035, -71.61555125302814) // Centrar el mapa inicialmente
+fun EventoScreen(navController: NavController) {
+
+    // --- LÓGICA DE PERMISOS Y UBICACIÓN (SIN CAMBIOS) ---
+    val locationPermissionsState = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+        )
+    )
+
+    var ubicacionActual by remember { mutableStateOf<LatLng?>(null) }
+    val context = LocalContext.current
 
 
+    LaunchedEffect(Unit) {
+        locationPermissionsState.launchMultiplePermissionRequest()
+    }
+
+
+    @SuppressLint("MissingPermission")
+    LaunchedEffect(locationPermissionsState.allPermissionsGranted) {
+        if (locationPermissionsState.allPermissionsGranted) {
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    ubicacionActual = LatLng(location.latitude, location.longitude)
+                }
+            }
+        }
+    }
+
+    // --- LÓGICA DE LA CÁMARA DEL MAPA (SIN CAMBIOS) ---
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(ubicacionInicial, 1f) // Zoom lejano para ver el mundo
+        position = CameraPosition.fromLatLngZoom(LatLng(-33.0444, -71.6155), 10f)
+    }
+
+    LaunchedEffect(ubicacionActual) {
+        ubicacionActual?.let {
+            cameraPositionState.animate(
+                update = CameraUpdateFactory.newLatLngZoom(it,15f),
+                durationMs = 1000
+            )
+        }
     }
 
     Scaffold(
         bottomBar = {
 
-            BottomNavBar(navContrller)
+            BottomNavBar(navController)
         }
     ) { innerPadding ->
-
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
-
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-
+            // --- MODIFICACIÓN CLAVE ---
+            // El GoogleMap ahora está fuera del `if`. Siempre se mostrará.
             GoogleMap(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.4f),
-                cameraPositionState = cameraPositionState
+                cameraPositionState = cameraPositionState,
+                // Las propiedades del mapa ahora dependen de si los permisos fueron concedidos.
+                properties = MapProperties(
+                    isMyLocationEnabled = locationPermissionsState.allPermissionsGranted
+                ),
+                uiSettings = MapUiSettings(
+                    myLocationButtonEnabled = locationPermissionsState.allPermissionsGranted
+                )
             ) {
+                // Los marcadores se muestran siempre, como antes.
                 listaDeEventos.forEach { evento ->
                     Marker(
                         state = MarkerState(position = evento.ubicacion),
@@ -102,7 +147,7 @@ fun EventoScreen(navContrller : NavController) {
                 }
             }
 
-
+            // La lista de eventos se mantiene igual
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
@@ -123,6 +168,8 @@ fun EventoScreen(navContrller : NavController) {
         }
     }
 }
+
+
 
 
 @Composable
@@ -147,7 +194,7 @@ fun EventoCard(evento: Evento) {
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(
-                modifier = Modifier.weight(1f) // Permite que la columna ocupe el espacio restante
+                modifier = Modifier.weight(1f)
             ) {
                 Text(
                     text = evento.nombre,
@@ -170,7 +217,7 @@ private fun InfoRow(icon: ImageVector, text: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
             imageVector = icon,
-            contentDescription = null, // Decorativo
+            contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(16.dp)
         )
@@ -182,5 +229,6 @@ private fun InfoRow(icon: ImageVector, text: String) {
         )
     }
 }
+
 
 
