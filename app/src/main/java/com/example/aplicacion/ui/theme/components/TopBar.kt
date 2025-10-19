@@ -39,7 +39,7 @@ fun TopBar(
 ) {
     Column(modifier = Modifier
         .background(DarkBackground)
-        .padding(horizontal = 16.dp, vertical = 30.dp)) {
+        .padding(horizontal = 16.dp, vertical = 15.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -48,34 +48,17 @@ fun TopBar(
             Image(
                 painter = painterResource(id = R.drawable.logo_level_up),
                 contentDescription = "Logo",
-                modifier = Modifier.height(30.dp)
+                modifier = Modifier.height(20.dp)
             )
             Row {
                 IconButton(onClick = { navController.navigate("carrito") }) {
                     Icon(Icons.Default.ShoppingCart, contentDescription = "Carrito", tint = TextColor)
                 }
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = { }) {
                     Icon(Icons.Default.Notifications, contentDescription = "Notificaciones", tint = TextColor)
                 }
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = "",
-            onValueChange = {},
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Buscar en Level-Up Gamer...", color = TextColorSecondary) },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar", tint = TextColorSecondary) },
-            shape = CircleShape,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = AccentGreen,
-                unfocusedBorderColor = Color.DarkGray,
-                focusedTextColor = TextColor,
-                unfocusedTextColor = TextColor,
-                cursorColor = AccentGreen,
-                unfocusedContainerColor = CardBackground,
-                focusedContainerColor = CardBackground
-            )
-        )
     }
 }

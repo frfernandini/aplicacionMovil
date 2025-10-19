@@ -3,6 +3,7 @@ package com.example.aplicacion.ui.theme.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +14,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,6 +54,14 @@ fun HomeScreen(
 
     //LISTADO ESTATICO DE PRODUCTOS
     val productos by productoViewModel.catalogo.collectAsState()
+    val categoriaSeleccionada by productoViewModel.busquedaCategoria.collectAsState()
+
+    //ACA SE FILTRAN LOS PRODUCTOS SEGUN LA CATEGORIA SELECCIONADA
+    val productosFiltrados =
+        if (categoriaSeleccionada.isEmpty())
+            productos
+        else
+            productos.filter { it.categoria == categoriaSeleccionada }
     Scaffold(
         topBar = { TopBar(navController = navController) },
         bottomBar = { BottomNavBar() },
@@ -92,6 +104,7 @@ fun HomeScreen(
     }
 }
 
+//COMPOSE BANNER
 @Composable
 fun BannerCarousel() {
     Image(
@@ -105,3 +118,53 @@ fun BannerCarousel() {
         contentScale = ContentScale.Crop
     )
 }
+
+//COMPOSE PARA FILTRAR POR CATEGORIA
+/*@Composable
+fun CategoriaBar(productoViewModel: ProductoViewModel) {
+    val productos by productoViewModel.productos.collectAsState()
+    val categoriaSeleccionada by productoViewModel.busquedaCategoria.collectAsState()
+
+    val categorias = productos.map { it.categoria }.distinct()
+
+    // Estado para abrir/cerrar el dropdown
+    var expandir by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = { expandir = true },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = AccentGreen,
+                contentColor = TextColor
+            ),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Text(
+                text = if (categoriaSeleccionada.isEmpty()) "Categorías" else categoriaSeleccionada
+            )
+        }
+
+        DropdownMenu(
+            expanded = expandir,
+            onDismissRequest = { expandir = false }
+        ) {
+            // Opción "Todas"
+            DropdownMenuItem(onClick = {
+                productoViewModel.onCategoriaBusquedaChange("")
+                expandir = false
+            }) {
+                Text("Todas")
+            }
+
+            // Opciones de las categorías
+            categorias.forEach { categoria ->
+                DropdownMenuItem(onClick = {
+                    productoViewModel.onCategoriaBusquedaChange(categoria)
+                    expandir = false
+                }) {
+                    Text(categoria)
+                }
+            }
+        }
+    }
+}*/

@@ -30,6 +30,7 @@ import com.example.aplicacion.ui.theme.screen.CardBackground
 import com.example.aplicacion.ui.theme.screen.TextColor
 import com.example.aplicacion.R
 import com.example.aplicacion.ui.theme.azulElectrico
+import com.example.aplicacion.ui.theme.blanco
 import com.example.aplicacion.ui.theme.negroGrafito
 import com.example.aplicacion.ui.theme.screen.AccentGreen
 import com.example.aplicacion.ui.theme.verdeNeon
@@ -116,7 +117,7 @@ fun ProductCard(
             ) {
                 Text(
                     text = if (producto.enCarrito) "Quitar del carrito" else "Agregar al carrito",
-                    color = negroGrafito
+                    color = if (producto.enCarrito) blanco else negroGrafito
                 )
             }
         }
