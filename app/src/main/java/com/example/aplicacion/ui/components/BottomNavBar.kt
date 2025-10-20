@@ -17,8 +17,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 @Composable
-fun BottomNavBar(navController : NavController) {
-    var selectedItem by remember { mutableStateOf(0) }
+fun BottomNavBar(navController : NavController,currentRoute:String?) {
+
 
     NavigationBar(
 
@@ -26,49 +26,47 @@ fun BottomNavBar(navController : NavController) {
         contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         NavigationBarItem(
-            selected = selectedItem == 0,
+            selected = currentRoute == "home",
             onClick = {
-                selectedItem = 0
-                navController.navigate("home")
+                if (currentRoute != "home") {
+                    navController.navigate("home")
+                }
             },
             icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") },
             label = { Text("Inicio") },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = MaterialTheme.colorScheme.secondary,
-                selectedTextColor = MaterialTheme.colorScheme.secondary,
                 unselectedIconColor = MaterialTheme.colorScheme.onSurface,
-                unselectedTextColor = MaterialTheme.colorScheme.onSurface,
                 indicatorColor = MaterialTheme.colorScheme.surface
             )
         )
         NavigationBarItem(
-            selected = selectedItem == 1,
+            selected = currentRoute == "eventos",
             onClick = {
-                selectedItem = 1
-                navController.navigate("eventos")      },
+                if (currentRoute != "eventos") {
+                    navController.navigate("eventos")
+                }
+            },
             icon = { Icon(Icons.Default.Star, contentDescription = "Eventos") },
             label = { Text("Eventos") },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = MaterialTheme.colorScheme.secondary,
-                selectedTextColor = MaterialTheme.colorScheme.secondary,
                 unselectedIconColor = MaterialTheme.colorScheme.onSurface,
-                unselectedTextColor = MaterialTheme.colorScheme.onSurface,
                 indicatorColor = MaterialTheme.colorScheme.surface
             )
         )
         NavigationBarItem(
-            selected = selectedItem == 2,
+            selected = currentRoute == "perfil",
             onClick = {
-                selectedItem = 2
-                navController.navigate("perfil")
+                if (currentRoute != "perfil") {
+                    navController.navigate("perfil")
+                }
             },
             icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
             label = { Text("Perfil") },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = MaterialTheme.colorScheme.secondary,
-                selectedTextColor = MaterialTheme.colorScheme.secondary,
                 unselectedIconColor = MaterialTheme.colorScheme.onSurface,
-                unselectedTextColor = MaterialTheme.colorScheme.onSurface,
                 indicatorColor = MaterialTheme.colorScheme.surface
             )
         )

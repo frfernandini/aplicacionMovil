@@ -96,7 +96,7 @@ fun EventoScreen(navController: NavController) {
         }
     }
 
-    // --- LÓGICA DE LA CÁMARA DEL MAPA (SIN CAMBIOS) ---
+
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(-33.0444, -71.6155), 10f)
     }
@@ -113,7 +113,7 @@ fun EventoScreen(navController: NavController) {
     Scaffold(
         bottomBar = {
 
-            BottomNavBar(navController)
+            BottomNavBar(navController,"eventos")
         }
     ) { innerPadding ->
         Column(
