@@ -42,7 +42,7 @@ fun ProfileScreen(navController: NavController, profileViewModel: PerfilViewMode
 
     Scaffold(
         bottomBar = {
-            BottomNavBar(navController)
+            BottomNavBar(navController,"perfil")
         }
     ) { innerPadding ->
 

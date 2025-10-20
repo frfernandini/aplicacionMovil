@@ -69,7 +69,7 @@ fun HomeScreen(
 
     Scaffold(
         topBar = { TopBar(navController = navController) },
-        bottomBar = { BottomNavBar(navController = navController) },
+        bottomBar = { BottomNavBar(navController,"home") },
         containerColor = DarkBackground
     ) { innerPadding ->
         if (isLoading){
