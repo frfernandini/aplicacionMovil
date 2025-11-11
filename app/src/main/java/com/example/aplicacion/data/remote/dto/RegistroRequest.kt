@@ -1,6 +1,6 @@
 package com.example.aplicacion.data.remote.dto
 
-class RegistroRequest(
+data class RegistroRequest(
     val nombre: String,
     val email: String,
     val password: String,

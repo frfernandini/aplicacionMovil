@@ -5,13 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.aplicacion.model.local.AppDatabase
 import com.example.aplicacion.model.repository.ProductoRepository
-
+import com.example.aplicacion.data.remote.RetrofitInstance
 
 class ProductoViewModelFactory(private val app: Application): ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val db = AppDatabase.get(app)
-        val repo = ProductoRepository(db.productoDao())
+        val apiService = RetrofitInstance.api
+
+        val repo = ProductoRepository(apiService, db.productoDao())
         return ProductoViewModel(repo) as T
     }
 }

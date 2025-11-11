@@ -2,6 +2,7 @@ package com.example.aplicacion.data.remote
 
 import com.example.aplicacion.data.remote.dto.AuthResponse
 import com.example.aplicacion.data.remote.dto.LoginRequest
+import com.example.aplicacion.data.remote.dto.ProductoDto
 import com.example.aplicacion.data.remote.dto.RegistroRequest
 
 import retrofit2.Response
@@ -16,4 +17,7 @@ interface ApiService {
 
     @POST("api/auth/login")
     suspend fun login(@Body request: LoginRequest):Response<AuthResponse>
+
+    @GET("/api/productos")
+    suspend fun obtenerProductos():Response<List<ProductoDto>>
 }

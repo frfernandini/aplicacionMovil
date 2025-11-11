@@ -1,10 +1,12 @@
 package com.example.aplicacion.model.repository
 
+import com.example.aplicacion.data.remote.ApiService
+import com.example.aplicacion.data.remote.dto.ProductoDto
 import com.example.aplicacion.model.local.ProductoDAO
 import com.example.aplicacion.model.local.ProductoEntity
 import kotlinx.coroutines.flow.Flow
 
-class ProductoRepository(private val dao: ProductoDAO) {
+class ProductoRepository(private val apiService: ApiService, private val dao: ProductoDAO) {
 
     fun obtenerProductos(): Flow<List<ProductoEntity>> = dao.mostrarTodos()
 
@@ -12,7 +14,18 @@ class ProductoRepository(private val dao: ProductoDAO) {
 
     fun obtenerProdPorCategoria(categoria: String): Flow<List<ProductoEntity>> = dao.obtenerPorCategoria(categoria)
 
-    //FUNCIONES QUE SE UTILIZARAN POSTERIORMENTE PARA AGREGAR PRODUCTOS Y VICEVERSA
+    suspend fun obtenerProductosRemotos(): List<ProductoDto>? {
+        return try {
+            val response = apiService.obtenerProductos()
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null // El servidor devolvió un error (4xx, 5xx)
+            }
+        } catch (e: Exception) {
+            null // Ocurrió un error de red (sin conexión, timeout, etc.)
+        }
+    }
     suspend fun agregarAlCarrito(producto: ProductoEntity){
         dao.actualizar(producto.copy(enCarrito = true))
     }

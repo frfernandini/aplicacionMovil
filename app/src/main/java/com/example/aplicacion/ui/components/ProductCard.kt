@@ -24,10 +24,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.aplicacion.model.local.ProductoEntity
 import com.example.aplicacion.ui.screen.CardBackground
 import com.example.aplicacion.ui.screen.TextColor
 import com.example.aplicacion.R
+import com.example.aplicacion.data.remote.dto.ProductoDto
 import com.example.aplicacion.ui.theme.azulElectrico
 import com.example.aplicacion.ui.theme.blanco
 import com.example.aplicacion.ui.theme.negroGrafito
@@ -41,9 +43,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ProductCard(
-    producto: ProductoEntity,
+    producto: ProductoDto,
     vm: ProductoViewModel,
-    onEdit: (ProductoEntity) -> Unit
+    estaEnCarrito: Boolean,
+    //onEdit: (ProductoEntity) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -56,17 +59,19 @@ fun ProductCard(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = CardBackground)
     ) {
-        val imagenFondo = if (producto.imagen != 0) producto.imagen else R.drawable.ic_launcher_background
+        val imageUrlCompleta = "http://192.168.100.14:8080${producto.imagenUrl}"
 
-        Image(
-            painter = painterResource(id = imagenFondo),
+        AsyncImage(
+            model = imageUrlCompleta, // <-- Usa la URL de la red
             contentDescription = producto.nombre,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
                 .padding(8.dp)
                 .clip(RoundedCornerShape(8.dp)),
-            contentScale = ContentScale.Fit
+            contentScale = ContentScale.Fit,
+
+            error = painterResource(id = R.drawable.logo_level_up)
         )
 
         Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
@@ -106,26 +111,18 @@ fun ProductCard(
 
             Button(
                 onClick = {
-                    //CAMBIAR EL ESTADO PARA ANIMARLO
-                    press = true
-                    //ACCION DE CARRITO
                     vm.modificarCarrito(producto)
-                    //REINICIA EL TAMAÑO DESPUES DE 400ms
-                    scope.launch {
-                        delay(400)
-                        press = false
-                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .graphicsLayer(scaleX = scale, scaleY = scale),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (producto.enCarrito) Color.Red else AccentGreen
+                    containerColor = if (estaEnCarrito) Color.Red else AccentGreen
                 )
             ) {
                 Text(
-                    text = if (producto.enCarrito) "Quitar del carrito" else "Agregar al carrito",
-                    color = if (producto.enCarrito) blanco else negroGrafito
+                    text = if (estaEnCarrito) "Quitar del carrito" else "Agregar al carrito",
+                    color = if (estaEnCarrito) blanco else negroGrafito
                 )
             }
         }

@@ -13,9 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+// Eliminamos imports no usados como mutableStateOf, remember, setValue, delay
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -24,7 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.aplicacion.R
-import com.example.aplicacion.model.local.ProductoEntity
+import com.example.aplicacion.data.remote.dto.ProductoDto
 import com.example.aplicacion.ui.components.ProductSection
 import com.example.aplicacion.ui.components.TopBar
 import com.example.aplicacion.ui.theme.azulElectrico
@@ -32,10 +30,10 @@ import com.example.aplicacion.ui.components.BottomNavBar
 import com.example.aplicacion.ui.components.Loader
 import com.example.aplicacion.ui.theme.grisClaro
 import com.example.aplicacion.ui.theme.negroGrafito
-import com.example.aplicacion.ui.theme.verdeNeon
+
 import com.example.aplicacion.ui.theme.verdeOscuro
 import com.example.aplicacion.viewmodel.ProductoViewModel
-import kotlinx.coroutines.delay
+
 
 
 val DarkBackground = Color(0xFF1f1f1f)
@@ -49,16 +47,17 @@ fun HomeScreen(
     navController: NavController,
     productoViewModel: ProductoViewModel
 ) {
-    val productos by productoViewModel.catalogo.collectAsState()
+
+    val productos by productoViewModel.productos.collectAsState()
     val categoriaSeleccionada by productoViewModel.busquedaCategoria.collectAsState()
+    val isLoading by productoViewModel.isLoading.collectAsState()
+    val carritoIds by productoViewModel.carritoIds.collectAsState()
 
-    var isLoading by remember { mutableStateOf(true) }
 
-    // Simula que carga al entrar
     LaunchedEffect(Unit) {
-        delay(1000)
-        isLoading = false
+        productoViewModel.cargarProductosRemotos()
     }
+
 
     val filtradoProductos =
         if (categoriaSeleccionada.isEmpty())
@@ -80,21 +79,25 @@ fun HomeScreen(
                     .padding(innerPadding)
             ) {
                 BannerCarousel()
+
                 Categoria(
-                    catalogo = productos,
+                    productos = productos,
                     categoriaSeleccionada = categoriaSeleccionada,
                     onCategoriaSelected = { productoViewModel.onCategoriaBusquedaChange(it) }
                 )
 
                 if (filtradoProductos.isNotEmpty()) {
+
                     ProductSection(
                         title = "Productos Disponibles",
                         productos = filtradoProductos,
                         vm = productoViewModel,
-                        onEdit = { producto ->
-                            productoViewModel.cargarProdParaEditar(producto)
-                            navController.navigate("formProducto")
-                        }
+                        carritoIds = carritoIds,
+                        onEdit = { /* producto ->
+                            // Como la edición está basada en la lógica antigua, la dejamos vacía.
+                            // productoViewModel.cargarProdParaEditar(producto)
+                            // navController.navigate("formProducto")
+                        */ }
                     )
                 } else {
                     Text(
@@ -111,6 +114,7 @@ fun HomeScreen(
 
 @Composable
 fun BannerCarousel() {
+
     Image(
         painter = painterResource(id = R.drawable.banner),
         contentDescription = "Banner Promocional",
@@ -125,18 +129,20 @@ fun BannerCarousel() {
 
 @Composable
 fun Categoria(
-    catalogo: List<ProductoEntity>,
+
+    productos: List<ProductoDto>,
     categoriaSeleccionada: String,
     onCategoriaSelected: (String) -> Unit
 ) {
-    val categorias = catalogo.map { it.categoria }.distinct()
+    val categorias = productos.map { it.categoria }.distinct()
 
     Row(
         modifier = Modifier
             .horizontalScroll(rememberScrollState())
             .padding(8.dp)
     ) {
-        //BOTON MOSTRAR TODO
+
+
         val btColorTodas by animateColorAsState(
             targetValue = if (categoriaSeleccionada.isBlank()) verdeOscuro else grisClaro,
             animationSpec = tween(durationMillis = 400)
@@ -154,7 +160,7 @@ fun Categoria(
             Text("Todas", color = textColorTodas)
         }
 
-        //BOTONES CATEGORIAS
+
         categorias.forEach { categoria ->
             val btColor by animateColorAsState(
                 targetValue = if (categoria == categoriaSeleccionada) verdeOscuro else grisClaro,
