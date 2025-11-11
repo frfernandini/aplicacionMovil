@@ -1,5 +1,7 @@
 package com.example.aplicacion.ui.screen
 
+
+import com.example.aplicacion.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,14 +18,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.aplicacion.R
-import com.example.aplicacion.ui.components.FormularioTextField // <-- PASO 1: IMPORTAR TU COMPONENTE
-import com.example.aplicacion.viewmodel.UsuarioViewModel
+import com.example.aplicacion.ui.components.FormularioTextField
+import com.example.aplicacion.viewmodel.RegistroViewModel
 import androidx.compose.runtime.LaunchedEffect
+
+
+
 @Composable
 fun RegistroScreen(
     navController: NavController,
-    viewModel: UsuarioViewModel
+    viewModel: RegistroViewModel
 ) {
     val estado by viewModel.estado.collectAsState()
     LaunchedEffect(key1 = estado.registroExitoso) {
@@ -37,7 +41,7 @@ fun RegistroScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background) // Usar el color de fondo general
+            .background(MaterialTheme.colorScheme.background)
             .padding(24.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -22,8 +22,8 @@ import com.example.aplicacion.viewmodel.LoginViewModel
 import com.example.aplicacion.viewmodel.LoginViewModelFactory
 import com.example.aplicacion.viewmodel.PerfilViewModel
 import com.example.aplicacion.viewmodel.PerfilViewModelFactory
-import com.example.aplicacion.viewmodel.UsuarioViewModel
-import com.example.aplicacion.viewmodel.UsuarioViewModelFactory
+import com.example.aplicacion.viewmodel.RegistroViewModel
+import com.example.aplicacion.viewmodel.RegistroViewModelFactory
 
 @Composable
 fun AppNavigation() {
@@ -32,7 +32,7 @@ fun AppNavigation() {
     val application = context.applicationContext as Application
 
 
-    val usuarioViewModelFactory = UsuarioViewModelFactory(application)
+    val registroViewModelFactory = RegistroViewModelFactory(application)
     val loginViewModelFactory = LoginViewModelFactory(application)
     val editarPerfilViewModelFactory = EditarPerfilViewModelFactory(application)
     val perfilViewModelFactory = PerfilViewModelFactory(application)
@@ -45,8 +45,8 @@ fun AppNavigation() {
     ) {
 
         composable("registro") {
-            val usuarioViewModel: UsuarioViewModel = viewModel(factory = usuarioViewModelFactory)
-            RegistroScreen(navController, usuarioViewModel)
+            val registroViewModel: RegistroViewModel = viewModel(factory = registroViewModelFactory)
+            RegistroScreen(navController, registroViewModel)
         }
         composable("login") {
             val loginViewModel: LoginViewModel = viewModel(factory = loginViewModelFactory)

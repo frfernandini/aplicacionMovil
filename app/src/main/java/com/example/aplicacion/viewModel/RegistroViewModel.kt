@@ -1,7 +1,9 @@
 package com.example.aplicacion.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.aplicacion.data.remote.dto.RegistroRequest
 import com.example.aplicacion.model.UsuarioErrores
 import com.example.aplicacion.model.UsuarioUiState
 import com.example.aplicacion.model.local.UsuarioEntity
@@ -12,7 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class UsuarioViewModel(private val repo: UsuarioRepository) : ViewModel() {
+class RegistroViewModel(private val repo: UsuarioRepository) : ViewModel() {
     private val _estado = MutableStateFlow(UsuarioUiState())
 
     val estado: StateFlow<UsuarioUiState> = _estado.asStateFlow()
@@ -59,16 +61,28 @@ class UsuarioViewModel(private val repo: UsuarioRepository) : ViewModel() {
     }
     fun registrarUsuario(){
         if(validarFormulario()){
-            val nuevoUsuario = UsuarioEntity(
+            val request = RegistroRequest(
                 nombre = estado.value.nombre,
-                correo = estado.value.correo,
-                contrasena = estado.value.clave,
+                email = estado.value.correo,
+                password = estado.value.clave,
                 direccion = estado.value.direccion
             )
 
             viewModelScope.launch {
-                repo.guardar(nuevoUsuario)
-                _estado.update { it.copy(registroExitoso = true) }
+                try{
+                    val response = repo.registrarUsuarioRemoto(request)
+                    if(response.isSuccessful && response.body() != null){
+                        val token = response.body()!!.token
+                        _estado.update {it.copy(registroExitoso = true, errores = UsuarioErrores())}
+                    }else{
+                        val errorMsg = "El correo ya esta registrado o hubo un error."
+                        _estado.update {it.copy(errores = it.errores.copy(correo = errorMsg))}
+
+                    }
+                }catch (e: Exception){
+                    Log.e("RegistroViewModel", "Fallo en el registro",e)
+                    _estado.update { it.copy(errores = it.errores.copy(nombre = "No se pudo conectar al servidor. Intenta de nuevo.")) }
+                }
             }
         }
     }
