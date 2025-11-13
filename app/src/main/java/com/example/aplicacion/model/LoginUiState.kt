@@ -1,8 +1,9 @@
 package com.example.aplicacion.model
 
-data class LoginUiState (
-    val correo:String = "",
-    val clave:String = "",
+data class LoginUiState(
+    val correo: String = "",
+    val clave: String = "",
     val error: String? = null,
-    val loginExitoso: Boolean = false
+    val loginExitoso: Boolean = false,
+    val userId: String? = null // <-- ADDED
 )

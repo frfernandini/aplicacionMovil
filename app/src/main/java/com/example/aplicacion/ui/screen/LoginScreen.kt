@@ -19,28 +19,37 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.aplicacion.R
-import com.example.aplicacion.ui.components.FormularioTextField // <-- ¡REUTILIZANDO!
+import com.example.aplicacion.ui.components.FormularioTextField
 import com.example.aplicacion.viewmodel.LoginViewModel
+import com.example.aplicacion.viewmodel.ProductoViewModel
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    loginViewModel: LoginViewModel  //
+    loginViewModel: LoginViewModel,
+    productoViewModel: ProductoViewModel // <-- ADDED
 ) {
 
     val uiState by loginViewModel.loginState.collectAsState()
 
-    LaunchedEffect(key1 = uiState.loginExitoso) {
-        if (uiState.loginExitoso) {
+    // --- THIS IS THE FINAL CONNECTION ---
+    LaunchedEffect(key1 = uiState) { // Watch the entire state
+        // When login is successful AND we have a userId
+        if (uiState.loginExitoso && uiState.userId != null) {
+            // 1. Set the user ID in the ProductViewModel
+            productoViewModel.setUsuarioId(uiState.userId!!)
+
+            // 2. Navigate to the home screen
             navController.navigate("home") {
                 popUpTo(navController.graph.startDestinationId) {
                     inclusive = true
                 }
                 launchSingleTop = true
             }
+
+            // 3. Reset the login state to prevent re-triggering
             loginViewModel.onNavegacionRealizada()
         }
     }
@@ -68,7 +77,6 @@ fun LoginScreen(
             color = MaterialTheme.colorScheme.onBackground
         )
 
-
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             FormularioTextField(
                 value = uiState.correo,
@@ -85,7 +93,6 @@ fun LoginScreen(
             )
         }
 
-
         uiState.error?.let {
             Text(
                 text = it,
@@ -95,10 +102,7 @@ fun LoginScreen(
         }
 
         Button(
-            onClick = {
-                loginViewModel.iniciarSesion()
-
-            },
+            onClick = { loginViewModel.iniciarSesion() },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)

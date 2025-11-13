@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,7 +19,8 @@ fun ProductSection(
     title: String,
     productos: List<ProductoDto>,
     vm: ProductoViewModel,
-    carritoIds: Set<Long>,
+    // CHANGED: From Set<Long> to List<ProductoDto>
+    carrito: List<ProductoDto>,
     onEdit: (ProductoDto) -> Unit
 ) {
     Column(modifier = Modifier.padding(vertical = 8.dp)) {
@@ -42,7 +42,8 @@ fun ProductSection(
                 ProductCard(
                     producto = producto,
                     vm = vm,
-                    estaEnCarrito = carritoIds.contains(producto.id)
+                    // CHANGED: The logic to check if a product is in the cart
+                    estaEnCarrito = carrito.any { it.id == producto.id }
 
                 )
             }

@@ -42,10 +42,11 @@ fun TopBar(
                 modifier = Modifier.height(20.dp)
             )
             Row {
+                // --- CORREGIDO ---
                 IconButton(onClick = { navController.navigate("carrito") }) {
                     Icon(Icons.Default.ShoppingCart, contentDescription = "Carrito", tint = TextColor)
                 }
-                IconButton(onClick = { }) {
+                IconButton(onClick = { /* TODO: Implementar navegación a notificaciones */ }) {
                     Icon(Icons.Default.Notifications, contentDescription = "Notificaciones", tint = TextColor)
                 }
             }

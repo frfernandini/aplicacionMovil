@@ -12,12 +12,6 @@ interface ProductoDAO {
     @Query("SELECT * FROM productos WHERE categoria = :categoria ORDER BY nombre ASC")
     fun obtenerPorCategoria(categoria: String): Flow<List<ProductoEntity>>
 
-    @Query("SELECT * FROM productos WHERE enCarrito = true ORDER BY nombre ASC")
-    fun obtenerCarrito(): Flow<List<ProductoEntity>>
-
-    @Query("UPDATE productos SET enCarrito = 0, cantidad = 1 WHERE enCarrito = 1")
-    suspend fun vaciarCarrito()
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertar(producto: ProductoEntity): Long
 
