@@ -40,15 +40,15 @@ class LoginViewModel(application: Application, private val repo: UsuarioReposito
                 val authResponse = repo.loginUsuario(loginRequest)
 
                 if (authResponse != null && authResponse.token.isNotBlank() && authResponse.id.isNotBlank()) {
-                    // --- SUCCESS! ---
-
-                    // CORREGIDO: Guardar el token en el SessionManager
+                    // --- CORREGIDO: Guardar TODOS los datos de sesión ---
                     SessionManager.authToken = authResponse.token
+                    SessionManager.userId = authResponse.id
 
+                    // Actualiza el estado de la UI para la navegación
                     _loginState.update {
                         it.copy(
                             loginExitoso = true,
-                            userId = authResponse.id
+                            userId = authResponse.id // Mantenemos esto por ahora para la navegación inicial
                         )
                     }
 
@@ -63,6 +63,7 @@ class LoginViewModel(application: Application, private val repo: UsuarioReposito
     }
 
     fun onNavegacionRealizada() {
-        _loginState.update { it.copy(loginExitoso = false, userId = null) }
+        // Ya no es necesario borrar el userId aquí, pero sí el estado de navegación
+        _loginState.update { it.copy(loginExitoso = false) }
     }
 }

@@ -2,6 +2,7 @@ package com.example.aplicacion.model.repository
 
 import com.example.aplicacion.data.remote.ApiService
 import com.example.aplicacion.data.remote.dto.CategoriaDto
+import com.example.aplicacion.data.remote.dto.PedidoRequest
 import com.example.aplicacion.data.remote.dto.ProductoDto
 import com.example.aplicacion.model.local.ProductoDAO
 import com.example.aplicacion.model.local.ProductoEntity
@@ -9,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 
 class ProductoRepository(private val apiService: ApiService, private val dao: ProductoDAO) {
 
-    // --- Local DB Operations (for admin features, etc.) ---
     fun obtenerProductos(): Flow<List<ProductoEntity>> = dao.mostrarTodos()
     fun obtenerProdPorCategoria(categoria: String): Flow<List<ProductoEntity>> = dao.obtenerPorCategoria(categoria)
     suspend fun guardar(producto: ProductoEntity) {
@@ -17,7 +17,6 @@ class ProductoRepository(private val apiService: ApiService, private val dao: Pr
     }
     suspend fun eliminar(producto: ProductoEntity) = dao.eliminar(producto)
 
-    // --- Remote Product Operations ---
     suspend fun obtenerProductosRemotos(): List<ProductoDto>? {
         return try {
             val response = apiService.obtenerProductos()
@@ -27,14 +26,10 @@ class ProductoRepository(private val apiService: ApiService, private val dao: Pr
         }
     }
 
-    // --- Cart Logic (Backend Driven) ---
-
-    // ¡AQUÍ ESTÁ LA TRADUCCIÓN!
     suspend fun obtenerCarrito(usuarioId: String): List<ProductoDto>? {
         return try {
             val response = apiService.obtenerCarrito(usuarioId)
             if (response.isSuccessful) {
-                // Mapea la respuesta del carrito (CarritoProductoDto) al DTO estándar (ProductoDto)
                 response.body()?.map { carritoDto ->
                     ProductoDto(
                         id = carritoDto.id,
@@ -42,11 +37,11 @@ class ProductoRepository(private val apiService: ApiService, private val dao: Pr
                         descripcion = carritoDto.descripcion,
                         precio = carritoDto.precio,
                         imagen = carritoDto.imagen,
-                        // Crea el objeto CategoriaDto a partir del String
                         categoria = CategoriaDto(id = null, nombre = carritoDto.categoria),
                         stock = carritoDto.stock,
                         marca = carritoDto.marca,
-                        destacado = carritoDto.destacado
+                        destacado = carritoDto.destacado,
+                        cantidad = carritoDto.cantidadEnCarrito ?: 1
                     )
                 }
             } else {
@@ -76,6 +71,31 @@ class ProductoRepository(private val apiService: ApiService, private val dao: Pr
     suspend fun vaciarCarrito(usuarioId: String): Boolean {
         return try {
             apiService.vaciarCarrito(usuarioId).isSuccessful
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    suspend fun crearPedido(request: PedidoRequest): Boolean {
+        return try {
+            apiService.crearPedido(request).isSuccessful
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    // --- NUEVAS FUNCIONES PARA CANTIDAD ---
+    suspend fun aumentarCantidad(usuarioId: String, productoId: Long): Boolean {
+        return try {
+            apiService.aumentarCantidad(usuarioId, productoId).isSuccessful
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    suspend fun disminuirCantidad(usuarioId: String, productoId: Long): Boolean {
+        return try {
+            apiService.disminuirCantidad(usuarioId, productoId).isSuccessful
         } catch (e: Exception) {
             false
         }

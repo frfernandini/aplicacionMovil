@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 
 class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
 
-
     private val _productos = MutableStateFlow<List<ProductoDto>>(emptyList())
     val productos: StateFlow<List<ProductoDto>> = _productos.asStateFlow()
 
@@ -32,14 +31,12 @@ class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
     private val _busquedaCategoria = MutableStateFlow("")
     val busquedaCategoria: StateFlow<String> = _busquedaCategoria
 
-
     private var usuarioId: String? = null
 
     init {
         Log.d("ViewModelLifecycle", "ProductoViewModel ¡HA SIDO CREADO!")
         cargarProductosRemotos()
     }
-
 
     fun setUsuarioId(id: String) {
         usuarioId = id
@@ -65,7 +62,7 @@ class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
             viewModelScope.launch {
                 val success = repo.agregarAlCarrito(uId, producto.id)
                 if (success) {
-                    cargarCarrito() // Refresh cart from backend
+                    cargarCarrito()
                 }
             }
         }
@@ -76,7 +73,7 @@ class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
             viewModelScope.launch {
                 val success = repo.quitarDelCarrito(uId, producto.id)
                 if (success) {
-                    cargarCarrito() // Refresh cart from backend
+                    cargarCarrito()
                 }
             }
         }
@@ -94,11 +91,37 @@ class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
         }
     }
 
-    private fun calcularTotalCarrito() {
-        _totalCarrito.value = _carrito.value.sumOf { it.precio ?: 0.0 }
+    // --- NUEVAS FUNCIONES PARA CANTIDAD ---
+    fun aumentarCantidad(producto: ProductoDto) {
+        usuarioId?.let { uId ->
+            viewModelScope.launch {
+                val success = repo.aumentarCantidad(uId, producto.id)
+                if (success) {
+                    cargarCarrito() // Recargamos para obtener la nueva cantidad y total
+                }
+            }
+        }
     }
 
-    // --- PRODUCT LOADING ---
+    fun disminuirCantidad(producto: ProductoDto) {
+        // Si la cantidad es 1, disminuir es lo mismo que quitar del carrito
+        if (producto.cantidad <= 1) {
+            quitarDelCarrito(producto)
+        } else {
+            usuarioId?.let { uId ->
+                viewModelScope.launch {
+                    val success = repo.disminuirCantidad(uId, producto.id)
+                    if (success) {
+                        cargarCarrito() // Recargamos para obtener la nueva cantidad y total
+                    }
+                }
+            }
+        }
+    }
+
+    private fun calcularTotalCarrito() {
+        _totalCarrito.value = _carrito.value.sumOf { (it.precio ?: 0.0) * it.cantidad }
+    }
 
     fun cargarProductosRemotos() {
         if (_isLoading.value) return
@@ -116,8 +139,6 @@ class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
             _isLoading.value = false
         }
     }
-
-
 
     fun onNombreCharge(valor: String) {
         _estado.update { it.copy(nombre = valor, errores = it.errores.copy(nombre = null)) }
@@ -166,7 +187,7 @@ class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
             nombre = if (_estado.value.nombre.isBlank()) "El Campo Es Obligatorio" else null,
             descripcion = if (_estado.value.descripcion.isBlank()) "El Campo Es Obligatorio" else null,
             precio = if (precioDouble <= 0) "El valor debe ser mayor y distinto de cero" else null,
-            imagen = if (_estado.value.imagen == 0) "La imagen es obligatoria" else null, // Ajustado a Int=0 como inválido
+            imagen = if (_estado.value.imagen == 0) "La imagen es obligatoria" else null,
             categoria = if (_estado.value.categoria.isBlank()) "El Campo Es Obligatorio" else null,
         )
 

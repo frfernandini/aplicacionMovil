@@ -1,14 +1,14 @@
 package com.example.aplicacion.ui.screen
 
-import android.app.Application
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,11 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.aplicacion.R
 import com.example.aplicacion.data.remote.dto.ProductoDto
@@ -31,15 +30,14 @@ import com.example.aplicacion.ui.theme.azulElectrico
 import com.example.aplicacion.ui.theme.grisClaro
 import com.example.aplicacion.ui.theme.negroGrafito
 import com.example.aplicacion.viewmodel.ProductoViewModel
-import com.example.aplicacion.viewmodel.ProductoViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CarritoScreen(
     vm: ProductoViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onPagar: () -> Unit
 ) {
-    // Esta parte ya está bien, porque el ViewModel ahora expone la lista de DTOs.
     val carrito by vm.carrito.collectAsState()
     val total by vm.totalCarrito.collectAsState()
     val isLoading by vm.isLoading.collectAsState()
@@ -61,7 +59,7 @@ fun CarritoScreen(
                             Icon(Icons.Default.Delete, contentDescription = "Vaciar carrito", tint = Color.Red)
                         }
                     }
-                },
+                }
             )
         },
         bottomBar = {
@@ -71,14 +69,15 @@ fun CarritoScreen(
                     containerColor = Color.DarkGray
                 ) {
                     Row(
-                        Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // El total ya se calcula correctamente en el ViewModel
-                        Text("Total: $${"%.2f".format(total)}", color = azulElectrico, fontSize = 25.sp)
+                        Text("Total: $${"%.2f".format(total)}", color = azulElectrico, fontSize = 25.sp, fontWeight = FontWeight.Bold)
                         Button(
-                            onClick = { /* Lógica de pago futura */ },
+                            onClick = onPagar,
                             colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
                         ) {
                             Text("Pagar")
@@ -93,19 +92,24 @@ fun CarritoScreen(
         } else {
             if (carrito.isEmpty()) {
                 Box(
-                    Modifier.fillMaxSize().padding(padding),
+                    Modifier
+                        .fillMaxSize()
+                        .padding(padding),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("CARRITO VACIO", color = Color.Red)
+                    Text("CARRITO VACIO", color = Color.Red, fontSize = 20.sp)
                 }
             } else {
                 LazyColumn(
-                    Modifier.fillMaxSize().padding(padding)
+                    Modifier
+                        .fillMaxSize()
+                        .padding(padding)
                 ) {
-                    items(carrito) { producto -> // 'producto' ahora es de tipo ProductoDto
-                        // ¡ARREGLADO! Llamamos a la nueva versión de CarritoItem
+                    items(carrito) { producto ->
                         CarritoItem(
                             producto = producto,
+                            onAumentar = { vm.aumentarCantidad(producto) },
+                            onDisminuir = { vm.disminuirCantidad(producto) },
                             onEliminar = { vm.quitarDelCarrito(producto) }
                         )
                     }
@@ -117,11 +121,11 @@ fun CarritoScreen(
 
 @Composable
 fun CarritoItem(
-    producto: ProductoDto, // <-- ¡CAMBIADO! Ahora recibe un ProductoDto
+    producto: ProductoDto,
+    onAumentar: () -> Unit,
+    onDisminuir: () -> Unit,
     onEliminar: () -> Unit
 ) {
-    // --- LÓGICA DE IMAGEN ACTUALIZADA ---
-    // Construye la URL completa a partir de la ruta que viene del backend
     val imageUrlCompleta = "http://192.168.100.14:8080${producto.imagen}"
 
     Card(
@@ -137,7 +141,6 @@ fun CarritoItem(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Usa AsyncImage de Coil para cargar la imagen desde la URL
             AsyncImage(
                 model = imageUrlCompleta,
                 contentDescription = producto.nombre,
@@ -150,17 +153,27 @@ fun CarritoItem(
 
             Spacer(Modifier.width(12.dp))
 
-            // --- LÓGICA DE TEXTO ACTUALIZADA ---
             Column(Modifier.weight(1f)) {
-                Text(producto.nombre ?: "Sin nombre", maxLines = 2, fontSize = 20.sp, color = azulElectrico)
-                // Se usa '?: 0.0' para manejar precios nulos de forma segura
+                Text(producto.nombre ?: "Sin nombre", maxLines = 2, fontSize = 20.sp, color = azulElectrico, fontWeight = FontWeight.Bold)
                 Text("Precio: $${"%.2f".format(producto.precio ?: 0.0)}", fontSize = 16.sp, color = negroGrafito)
-                // Se elimina la línea de subtotal y la cantidad, ya que el DTO no las tiene.
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 4.dp)
+                ) {
+                    // --- CORRECCIÓN ESTÉTICA: Color más visible ---
+                    IconButton(onClick = onDisminuir, modifier = Modifier.size(28.dp)) {
+                        Icon(Icons.Default.Remove, contentDescription = "Disminuir cantidad", tint = azulElectrico)
+                    }
+                    Text("${producto.cantidad}", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = negroGrafito, modifier = Modifier.padding(horizontal = 8.dp))
+                    IconButton(onClick = onAumentar, modifier = Modifier.size(28.dp)) {
+                        Icon(Icons.Default.Add, contentDescription = "Aumentar cantidad", tint = azulElectrico)
+                    }
+                }
             }
 
-            // Mantenemos solo el botón de eliminar, ya que la lógica de cantidad fue simplificada.
             IconButton(onClick = onEliminar) {
-                Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.DarkGray)
+                Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.Red)
             }
         }
     }

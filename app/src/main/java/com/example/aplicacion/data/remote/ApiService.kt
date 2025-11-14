@@ -1,6 +1,6 @@
 package com.example.aplicacion.data.remote
 
-import com.example.aplicacion.data.remote.dto.* // Import all DTOs
+import com.example.aplicacion.data.remote.dto.*
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -15,13 +15,9 @@ interface ApiService {
     @POST("api/auth/login")
     suspend fun login(@Body request: LoginRequest): Response<AuthResponse>
 
-    // Este endpoint devuelve la lista de productos con la categoría como objeto
     @GET("/api/productos")
     suspend fun obtenerProductos(): Response<List<ProductoDto>>
 
-    // --- CORREGIDO ---
-    // Este endpoint devuelve los productos del carrito con la categoría como String,
-    // por lo que usamos nuestro DTO específico para el carrito.
     @GET("api/carrito/{usuarioId}")
     suspend fun obtenerCarrito(@Path("usuarioId") usuarioId: String): Response<List<CarritoProductoDto>>
 
@@ -39,4 +35,20 @@ interface ApiService {
 
     @DELETE("api/carritovacio/{usuarioId}")
     suspend fun vaciarCarrito(@Path("usuarioId") usuarioId: String): Response<Unit>
+
+    @POST("api/pedidos")
+    suspend fun crearPedido(@Body request: PedidoRequest): Response<Unit>
+
+    // --- NUEVOS ENDPOINTS PARA CANTIDAD ---
+    @POST("api/carrito/increase/{usuarioId}/{productoId}")
+    suspend fun aumentarCantidad(
+        @Path("usuarioId") usuarioId: String,
+        @Path("productoId") productoId: Long
+    ): Response<Unit>
+
+    @POST("api/carrito/decrease/{usuarioId}/{productoId}")
+    suspend fun disminuirCantidad(
+        @Path("usuarioId") usuarioId: String,
+        @Path("productoId") productoId: Long
+    ): Response<Unit>
 }
