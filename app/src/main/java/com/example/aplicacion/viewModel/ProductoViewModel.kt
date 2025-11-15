@@ -1,6 +1,5 @@
 package com.example.aplicacion.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aplicacion.data.remote.dto.ProductoDto
@@ -34,8 +33,8 @@ class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
     private var usuarioId: String? = null
 
     init {
-        Log.d("ViewModelLifecycle", "ProductoViewModel ¡HA SIDO CREADO!")
-        cargarProductosRemotos()
+        // No longer loading products automatically.
+        // The UI should trigger the initial load.
     }
 
     fun setUsuarioId(id: String) {
@@ -125,16 +124,15 @@ class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
 
     fun cargarProductosRemotos() {
         if (_isLoading.value) return
-        Log.d("ViewModelLifecycle", "cargarProductosRemotos() FUE LLAMADO")
         viewModelScope.launch {
             _isLoading.value = true
-            val resultado = repo.obtenerProductosRemotos()
-            Log.d("ViewModelLifecycle", "Resultado de la API: ${resultado?.size ?: "null"} productos")
-
-            if (resultado != null) {
-                _productos.value = resultado
-            } else {
-                Log.e("ViewModelLifecycle", "Error al cargar productos del backend o lista vacía.")
+            try {
+                val resultado = repo.obtenerProductosRemotos()
+                if (resultado != null) {
+                    _productos.value = resultado
+                }
+            } catch (e: Exception) {
+                _productos.value = emptyList()
             }
             _isLoading.value = false
         }
