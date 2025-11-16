@@ -41,41 +41,14 @@ La aplicación se comunica con un backend a través de una API REST. Los siguien
 
 ## Pasos para Ejecutar el Proyecto
 
-Para compilar y ejecutar la aplicación, sigue estos pasos:
+Para compilar y ejecutar la aplicación, sigue estos pasos
 
-1.  **Clonar el Repositorio**
+1.  **Configurar el Backend**
 
-    ```bash
-    git clone <URL_DEL_REPOSITORIO>
-    ```
+    Esta aplicación esta conectada con un backend desplegado en beanstalk, en caso de que se quiera iniciar en local habria que configurar el archivo RetrofitInstance.kt
 
-2.  **Configurar el Backend**
 
-    Esta aplicación requiere una instancia del backend de Levelup funcionando y accesible.
-
-    *   Asegúrate de que el backend esté desplegado (por ejemplo, en AWS Elastic Beanstalk).
-    *   Localiza el archivo `app/src/main/java/com/example/aplicacion/data/remote/RetrofitInstance.kt`.
-    *   Modifica la constante `BASE_URL` para que apunte a la URL pública de tu backend.
-
-        ```kotlin
-        // Ejemplo:
-        private const val BASE_URL = "http://levelup.us-east-1.elasticbeanstalk.com/"
-        ```
-
-3.  **Configurar la Seguridad de Red (si es necesario)**
-
-    *   Si tu backend se ejecuta en `http` (no encriptado), asegúrate de que el dominio esté en la lista de permitidos.
-    *   Ve a `app/src/main/res/xml/network_security_config.xml`.
-    *   Añade el dominio de tu backend.
-
-        ```xml
-        <domain-config cleartextTrafficPermitted="true">
-            <domain includeSubdomains="true">tu-dominio-de-backend.com</domain>
-        </domain-config>
-        ```
-    *   **Nota**: Para un despliegue a producción, es altamente recomendable que el backend utilice `https`.
-
-4.  **Compilar y Ejecutar**
+2.  **Compilar y Ejecutar**
 
     *   Abre el proyecto en Android Studio.
     *   Espera a que Gradle sincronice todas las dependencias.
