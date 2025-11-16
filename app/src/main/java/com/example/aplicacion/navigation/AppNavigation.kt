@@ -38,6 +38,7 @@ fun AppNavigation(
         }
 
         composable("perfil") {
+            // ARREGLO: Usar la factory para inyectar el repositorio de preferencias
             val factory = PerfilViewModelFactory(LocalContext.current.applicationContext as Application)
             val perfilViewModel: PerfilViewModel = viewModel(factory = factory)
             ProfileScreen(navController = navController, profileViewModel = perfilViewModel)
@@ -75,7 +76,6 @@ fun AppNavigation(
             val carrito by productoViewModel.carrito.collectAsState()
             val total by productoViewModel.totalCarrito.collectAsState()
 
-            // --- CORREGIDO: Simplificado ---
             CheckoutScreen(
                 navController = navController,
                 checkoutViewModel = checkoutViewModel,

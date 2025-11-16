@@ -1,10 +1,7 @@
 package com.example.aplicacion.model
 
+// Simplificado para solo manejar la imagen y el estado de guardado.
 data class EditarPerfilUiState(
-    val nombre: String = "",
-    val email: String = "",
-    val contrasena: String = "",
     val imagenUri: String = "",
-    val guardadoExitoso: Boolean = false,
-    val error: String? = null
+    val guardadoExitoso: Boolean = false
 )

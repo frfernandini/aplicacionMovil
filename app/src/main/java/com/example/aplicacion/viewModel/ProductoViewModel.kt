@@ -33,8 +33,7 @@ class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
     private var usuarioId: String? = null
 
     init {
-        // No longer loading products automatically.
-        // The UI should trigger the initial load.
+        cargarProductosRemotos()
     }
 
     fun setUsuarioId(id: String) {

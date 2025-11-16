@@ -65,13 +65,12 @@ fun CarritoScreen(
         bottomBar = {
             if (!isLoading && carrito.isNotEmpty()) {
                 BottomAppBar(
-                    modifier = Modifier.height(60.dp),
                     containerColor = Color.DarkGray
                 ) {
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 16.dp, vertical = 12.dp), // Padding vertical añadido
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -126,7 +125,8 @@ fun CarritoItem(
     onDisminuir: () -> Unit,
     onEliminar: () -> Unit
 ) {
-    val imageUrlCompleta = "http://192.168.100.14:8080${producto.imagen}"
+    // ARREGLO: La URL ahora viene completa desde el backend (S3)
+    val imageUrlCompleta = producto.imagen
 
     Card(
         modifier = Modifier

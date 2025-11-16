@@ -9,7 +9,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -46,14 +45,8 @@ fun HomeScreen(
     val isLoading by productoViewModel.isLoading.collectAsState()
     val carrito by productoViewModel.carrito.collectAsState()
 
-    LaunchedEffect(Unit) {
-        if (productos.isEmpty()) {
-            productoViewModel.cargarProductosRemotos()
-        }
-    }
+    // El LaunchedEffect ha sido eliminado. La carga ahora es responsabilidad del ViewModel.
 
-    // --- CORREGIDO ---
-    // Se vuelve a filtrar por el nombre dentro del objeto categoría.
     val filtradoProductos =
         if (categoriaSeleccionada.isEmpty()) {
             productos
@@ -121,8 +114,6 @@ fun Categoria(
     categoriaSeleccionada: String,
     onCategoriaSelected: (String) -> Unit
 ) {
-    // --- CORREGIDO ---
-    // Se vuelve a obtener el nombre de la categoría desde el objeto.
     val categorias = productos.mapNotNull { it.categoria?.nombre }.distinct()
 
     Row(

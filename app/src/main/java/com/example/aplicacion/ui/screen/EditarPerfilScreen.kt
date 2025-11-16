@@ -22,12 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.aplicacion.ui.components.FormularioTextField // ¡Reutilizando tu componente!
 import com.example.aplicacion.ui.theme.verdeNeon
 import com.example.aplicacion.viewmodel.EditarPerfilViewModel
 
@@ -35,11 +33,8 @@ import com.example.aplicacion.viewmodel.EditarPerfilViewModel
 @Composable
 fun EditarPerfilScreen(navController: NavController,viewModel: EditarPerfilViewModel) {
 
-    // --- ESTADOS TEMPORALES PARA LA UI ---
-    // En el futuro, estos vendrán de un ViewModel (EditProfileViewModel)
     val editarPerfilState by viewModel.editarPerfilState.collectAsState()
 
-    // --- LÓGICA PARA SELECCIONAR IMAGEN ---
     val pickMediaLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
@@ -50,14 +45,14 @@ fun EditarPerfilScreen(navController: NavController,viewModel: EditarPerfilViewM
     )
     LaunchedEffect(key1 = editarPerfilState.guardadoExitoso) {
         if (editarPerfilState.guardadoExitoso) {
-            navController.popBackStack() // Vuelve a la pantalla de perfil
-            viewModel.onNavegacionRealizada() // Resetea el estado para no volver a navegar
+            navController.popBackStack()
+            viewModel.onNavegacionRealizada()
         }
     }
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Editar Perfil", color = Color.White) },
+                title = { Text("Editar Foto de Perfil", color = Color.White) }, // Título actualizado
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -76,7 +71,7 @@ fun EditarPerfilScreen(navController: NavController,viewModel: EditarPerfilViewM
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF121212) // Mismo fondo que el resto de la pantalla
+                    containerColor = Color(0xFF121212)
                 )
             )
         },
@@ -87,16 +82,16 @@ fun EditarPerfilScreen(navController: NavController,viewModel: EditarPerfilViewM
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center // Centramos el contenido
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
 
             // --- SECCIÓN DE IMAGEN DE PERFIL ---
             Box(
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(200.dp) // Hacemos la imagen más grande
                     .clip(CircleShape)
-                    .border(2.dp, verdeNeon, CircleShape)
+                    .border(3.dp, verdeNeon, CircleShape)
                     .clickable {
                         pickMediaLauncher.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -115,11 +110,11 @@ fun EditarPerfilScreen(navController: NavController,viewModel: EditarPerfilViewM
                     Icon(
                         imageVector = Icons.Default.AddAPhoto,
                         contentDescription = "Añadir foto de perfil",
-                        tint = Color.Gray, // Un color que se vea bien en el fondo
+                        tint = Color.Gray,
                         modifier = Modifier
                             .fillMaxSize()
                             .background(Color.DarkGray.copy(alpha = 0.5f))
-                            .padding(24.dp)
+                            .padding(48.dp) // Aumentamos el padding del ícono
                     )
                 }
 
@@ -131,35 +126,10 @@ fun EditarPerfilScreen(navController: NavController,viewModel: EditarPerfilViewM
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .background(Color.Black.copy(alpha = 0.5f), CircleShape)
-                        .padding(8.dp)
+                        .padding(12.dp) // Hacemos el ícono de la cámara más grande
                 )
             }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            FormularioTextField(
-                value = editarPerfilState.nombre,
-                onValueChange = { viewModel.onNombreChange(it) },
-                label = "Nombre de Usuario"
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            FormularioTextField(
-                value = editarPerfilState.email,
-                onValueChange = {}, // No se puede cambiar
-                label = "Correo Electrónico",
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            FormularioTextField(
-                value = editarPerfilState.contrasena,
-                onValueChange = { viewModel.onContrasenaChange(it) },
-                label = "Contraseña",
-                keyboardType = KeyboardType.Password,
-                isPasswordToggle = true
-            )
+            // Se eliminaron los campos de texto para nombre, email y contraseña
         }
     }
 }

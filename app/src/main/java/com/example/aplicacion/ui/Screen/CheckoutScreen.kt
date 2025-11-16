@@ -55,15 +55,17 @@ fun CheckoutScreen(
             )
         },
         bottomBar = {
-            BottomAppBar(containerColor = Color.DarkGray) {
+            BottomAppBar(
+                containerColor = Color.DarkGray,
+                modifier = Modifier.height(80.dp) // Aumentamos la altura de la barra
+            ) {
                 Button(
                     onClick = {
                         checkoutViewModel.crearPedido(carrito)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .height(50.dp),
+                        .padding(horizontal = 16.dp), // Padding vertical ahora lo controla la barra
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Blue),
                     enabled = !uiState.isLoading
                 ) {
