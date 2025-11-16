@@ -50,7 +50,6 @@ Para compilar y ejecutar la aplicación, sigue estos pasos
 
 2.  **Compilar y Ejecutar**
 
-    *   Abre el proyecto en Android Studio.
-    *   Espera a que Gradle sincronice todas las dependencias.
-    *   Selecciona un emulador o un dispositivo físico y presiona "Run".
+    apk firmada disponible en el mismo repositorio, simplemente descargar y instalar en un dispositivo movil y funcionara sin problemas
+    
 
