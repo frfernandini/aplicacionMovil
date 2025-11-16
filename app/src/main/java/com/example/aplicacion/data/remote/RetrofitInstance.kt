@@ -8,7 +8,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
-    private const val BASE_URL = "http://192.168.100.14:8080/"
+    // URL del backend desplegado en Elastic Beanstalk
+    private const val BASE_URL = "http://levelup.us-east-1.elasticbeanstalk.com/"
 
     // --- INTERCEPTOR DE AUTENTICACIÓN ---
     private val authInterceptor = Interceptor { chain ->

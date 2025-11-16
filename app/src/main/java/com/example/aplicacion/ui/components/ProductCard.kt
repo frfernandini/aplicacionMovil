@@ -54,7 +54,8 @@ fun ProductCard(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = CardBackground)
     ) {
-        val imageUrlCompleta = "http://192.168.100.14:8080${producto.imagen}"
+        // AHORA la URL viene completa desde el backend
+        val imageUrlCompleta = producto.imagen
 
         AsyncImage(
             model = imageUrlCompleta,
