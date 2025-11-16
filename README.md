@@ -52,4 +52,6 @@ Para compilar y ejecutar la aplicación, sigue estos pasos
 
     apk firmada disponible en el mismo repositorio, simplemente descargar y instalar en un dispositivo movil y funcionara sin problemas
     
+**Captura firma de apk**
 
+<img width="525" height="610" alt="Screenshot_4" src="https://github.com/user-attachments/assets/6d43df4c-e773-4878-8a68-7c45e40e4180" />
