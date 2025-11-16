@@ -6,6 +6,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import com.example.aplicacion.ui.theme.verdeNeon
 
 @Composable
@@ -14,6 +15,9 @@ fun Loader() {
         Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(color = verdeNeon)
+        CircularProgressIndicator(
+            color = verdeNeon,
+            modifier = Modifier.testTag("LoadingIndicator") // Etiqueta para el test
+        )
     }
 }

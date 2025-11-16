@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -67,7 +68,10 @@ fun CheckoutScreen(
                     enabled = !uiState.isLoading
                 ) {
                     if (uiState.isLoading) {
-                        CircularProgressIndicator(color = Color.White)
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier.testTag("LoadingButtonIndicator")
+                        )
                     } else {
                         Text("Confirmar Pedido", fontSize = 18.sp)
                     }
@@ -86,13 +90,13 @@ fun CheckoutScreen(
             item {
                 Text("Resumen de tu compra", style = MaterialTheme.typography.titleLarge, color = azulElectrico)
                 Spacer(modifier = Modifier.height(8.dp))
-                carrito.forEach {
+                carrito.forEach { item ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text("${it.cantidad}x ${it.nombre}", color = Color.White)
-                        Text("$%.2f".format((it.precio ?: 0.0) * it.cantidad), color = Color.White)
+                        Text("${item.cantidad}x ${item.nombre}", color = Color.White)
+                        Text("$%.2f".format((item.precio ?: 0.0) * item.cantidad), color = Color.White)
                     }
                 }
                 Divider(modifier = Modifier.padding(vertical = 8.dp), color = azulElectrico)
