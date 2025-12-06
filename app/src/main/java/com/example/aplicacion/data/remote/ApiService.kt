@@ -51,4 +51,8 @@ interface ApiService {
         @Path("usuarioId") usuarioId: String,
         @Path("productoId") productoId: Long
     ): Response<Unit>
+
+    // --- NUEVO ENDPOINT PARA EVENTOS ---
+    @GET("api/eventos")
+    suspend fun obtenerEventos(): Response<List<EventoDto>>
 }

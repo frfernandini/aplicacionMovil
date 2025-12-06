@@ -33,9 +33,8 @@ class LoginViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         viewModel = LoginViewModel(mockApplication, mockRepo)
-        // Limpiar el SessionManager antes de cada test
-        SessionManager.authToken = ""
-        SessionManager.userId = ""
+        // MEJORA 1: Limpieza más robusta y centralizada
+        SessionManager.clearSession()
     }
 
     @After
@@ -58,6 +57,7 @@ class LoginViewModelTest {
     @Test
     fun `iniciarSesion con exito guarda los datos de sesion`() = runTest {
         val loginRequest = LoginRequest("user@test.com", "password123")
+        // MEJORA 2: El mock devuelve todos los datos necesarios
         val authResponse = AuthResponse(token = "fake-token", id = "user-1", nombre = "Test User")
         coEvery { mockRepo.loginUsuario(loginRequest) } returns authResponse
 
@@ -69,6 +69,9 @@ class LoginViewModelTest {
         // Verificar que los datos se guardaron en SessionManager
         assertEquals("fake-token", SessionManager.authToken)
         assertEquals("user-1", SessionManager.userId)
+        // MEJORA 2: Verificamos que TAMBIÉN se guardan nombre y email
+        assertEquals("Test User", SessionManager.userName)
+        assertEquals("user@test.com", SessionManager.userEmail)
     }
 
     @Test

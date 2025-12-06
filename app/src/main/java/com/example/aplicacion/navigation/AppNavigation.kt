@@ -51,7 +51,9 @@ fun AppNavigation(
         }
 
         composable("eventos") {
-            EventoScreen(navController)
+            val factory = EventoViewModelFactory(LocalContext.current.applicationContext as Application)
+            val eventoViewModel: EventoViewModel = viewModel(factory = factory)
+            EventoScreen(navController, eventoViewModel)
         }
 
         composable("home") {

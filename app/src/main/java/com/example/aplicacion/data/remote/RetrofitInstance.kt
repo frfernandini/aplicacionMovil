@@ -8,8 +8,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
-    // URL del backend desplegado en Elastic Beanstalk
-    private const val BASE_URL = "http://levelup.us-east-1.elasticbeanstalk.com/"
+    // URL del backend desplegado en Elastic Beanstalk =http://levelup.us-east-1.elasticbeanstalk.com/
+
+    private const val BASE_URL = "http://10.0.2.2:5000/"
 
     // --- INTERCEPTOR DE AUTENTICACIÓN ---
     private val authInterceptor = Interceptor { chain ->
@@ -25,9 +26,7 @@ object RetrofitInstance {
     private val client by lazy {
         val logging = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
         OkHttpClient.Builder()
-            // --- CORREGIDO: El interceptor de Auth va PRIMERO ---
             .addInterceptor(authInterceptor)
-            // --- Y el de logging va DESPUÉS para registrar la petición ya modificada ---
             .addInterceptor(logging)
             .build()
     }
