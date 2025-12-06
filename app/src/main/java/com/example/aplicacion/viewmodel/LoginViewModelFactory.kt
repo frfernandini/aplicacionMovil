@@ -11,7 +11,8 @@ class LoginViewModelFactory(private val app: Application) : ViewModelProvider.Fa
     override fun <T : ViewModel> create(modelClass : Class<T> ):T {
         val db = AppDatabase.get(app)
         val apiService = RetrofitInstance.api
-        val repo = UsuarioRepository(apiService,db.usuarioDao())
+        // ARREGLO: Pasamos el contexto al constructor del repositorio
+        val repo = UsuarioRepository(apiService, db.usuarioDao(), app)
         return LoginViewModel(app,repo) as T
 
     }

@@ -1,5 +1,6 @@
 package com.example.aplicacion.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -17,18 +19,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.Scaffold
 import androidx.navigation.NavController
+import com.example.aplicacion.ui.components.BottomNavBar
 import com.example.aplicacion.ui.components.ProfileMenuItem
 import com.example.aplicacion.ui.components.UserInfoSection
 import com.example.aplicacion.ui.theme.verdeNeon
 import com.example.aplicacion.viewmodel.PerfilViewModel
-import com.example.aplicacion.ui.components.BottomNavBar
 
 @Composable
 fun ProfileScreen(navController: NavController, profileViewModel: PerfilViewModel) {
     val uiState by profileViewModel.perfilState.collectAsState()
 
+    // --- DEBUG LOG ---
+    LaunchedEffect(uiState.imagenUri) {
+        Log.d("ProfileDebug", "URL de imagen recibida en UI: '${uiState.imagenUri}'")
+    }
+    // -----------------
 
     LaunchedEffect(key1 = uiState.logoutExitoso) {
         if (uiState.logoutExitoso) {

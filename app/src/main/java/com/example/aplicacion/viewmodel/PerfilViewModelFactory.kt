@@ -9,9 +9,8 @@ class PerfilViewModelFactory(private val application: Application) : ViewModelPr
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(PerfilViewModel::class.java)) {
-            // 1. Crear la dependencia del repositorio de preferencias
+            // CAMBIO: Volvemos a inyectar el repositorio de preferencias locales
             val prefsRepository = UserPreferencesRepository(application)
-            // 2. Pasarla al constructor del PerfilViewModel
             return PerfilViewModel(application, prefsRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

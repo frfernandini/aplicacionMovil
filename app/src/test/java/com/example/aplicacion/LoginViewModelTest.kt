@@ -25,7 +25,7 @@ import java.io.IOException
 class LoginViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
-    private val mockRepo = mockk<UsuarioRepository>(relaxed = true) // relaxed = true para no mockear todos los métodos
+    private val mockRepo = mockk<UsuarioRepository>(relaxed = true)
     private val mockApplication = mockk<Application>(relaxed = true)
     private lateinit var viewModel: LoginViewModel
 
@@ -33,7 +33,6 @@ class LoginViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         viewModel = LoginViewModel(mockApplication, mockRepo)
-        // MEJORA 1: Limpieza más robusta y centralizada
         SessionManager.clearSession()
     }
 
@@ -57,8 +56,7 @@ class LoginViewModelTest {
     @Test
     fun `iniciarSesion con exito guarda los datos de sesion`() = runTest {
         val loginRequest = LoginRequest("user@test.com", "password123")
-        // MEJORA 2: El mock devuelve todos los datos necesarios
-        val authResponse = AuthResponse(token = "fake-token", id = "user-1", nombre = "Test User")
+        val authResponse = AuthResponse(token = "fake-token", id = "user-1", nombre = "Test User", imagenUrl = "http://example.com/image.jpg")
         coEvery { mockRepo.loginUsuario(loginRequest) } returns authResponse
 
         viewModel.onCorreoChange("user@test.com")
@@ -66,18 +64,17 @@ class LoginViewModelTest {
         viewModel.iniciarSesion()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Verificar que los datos se guardaron en SessionManager
         assertEquals("fake-token", SessionManager.authToken)
         assertEquals("user-1", SessionManager.userId)
-        // MEJORA 2: Verificamos que TAMBIÉN se guardan nombre y email
         assertEquals("Test User", SessionManager.userName)
         assertEquals("user@test.com", SessionManager.userEmail)
+        assertEquals("http://example.com/image.jpg", SessionManager.userImageUrl)
     }
 
     @Test
     fun `onNavegacionRealizada resetea el estado de loginExitoso`() = runTest {
-        // Arrange: successful login
-        coEvery { mockRepo.loginUsuario(any()) } returns AuthResponse(token = "fake-token", id = "user-1", nombre = "Test User")
+        // ARREGLO: Añadir imagenUrl al mock
+        coEvery { mockRepo.loginUsuario(any()) } returns AuthResponse(token = "fake-token", id = "user-1", nombre = "Test User", imagenUrl = null)
         viewModel.onCorreoChange("user@test.com")
         viewModel.onClaveChange("password123")
         viewModel.iniciarSesion()
@@ -124,7 +121,8 @@ class LoginViewModelTest {
     @Test
     fun `iniciarSesion con credenciales validas devuelve exito`() = runTest {
         val loginRequest = LoginRequest("user@test.com", "password123")
-        val authResponse = AuthResponse(token = "fake-token", id = "user-1", nombre = "Test User")
+        // ARREGLO: Añadir imagenUrl al mock
+        val authResponse = AuthResponse(token = "fake-token", id = "user-1", nombre = "Test User", imagenUrl = null)
         coEvery { mockRepo.loginUsuario(loginRequest) } returns authResponse
 
         viewModel.onCorreoChange("user@test.com")

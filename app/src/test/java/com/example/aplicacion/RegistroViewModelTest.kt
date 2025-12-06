@@ -70,7 +70,8 @@ class RegistroViewModelTest {
     @Test
     fun `onNavegacionRealizada resetea el estado de registroExitoso`() = runTest {
         // Arrange: successful registration
-        coEvery { mockRepo.registrarUsuarioRemoto(any()) } returns Response.success(AuthResponse("fake-token", "user-1", "Test User"))
+        // ARREGLO: Añadir imagenUrl al mock
+        coEvery { mockRepo.registrarUsuarioRemoto(any()) } returns Response.success(AuthResponse("fake-token", "user-1", "Test User", imagenUrl = null))
         viewModel.onNombreChange("Test User")
         viewModel.onCorreoChange("test@example.com")
         viewModel.onClaveChange("password123")
@@ -106,7 +107,8 @@ class RegistroViewModelTest {
     @Test
     fun `registrarUsuario con exito actualiza el estado a exitoso`() = runTest {
         val request = RegistroRequest("Test User", "test@example.com", "password123", "123 Test St")
-        val response = Response.success(AuthResponse("fake-token", "user-1", "Test User"))
+        // ARREGLO: Añadir imagenUrl al mock
+        val response = Response.success(AuthResponse("fake-token", "user-1", "Test User", imagenUrl = null))
         coEvery { mockRepo.registrarUsuarioRemoto(any()) } returns response
 
         viewModel.onNombreChange(request.nombre)

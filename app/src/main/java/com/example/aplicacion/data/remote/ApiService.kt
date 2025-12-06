@@ -1,12 +1,9 @@
 package com.example.aplicacion.data.remote
 
 import com.example.aplicacion.data.remote.dto.*
+import okhttp3.MultipartBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface ApiService {
     @POST("api/auth/registro")
@@ -55,4 +52,12 @@ interface ApiService {
     // --- NUEVO ENDPOINT PARA EVENTOS ---
     @GET("api/eventos")
     suspend fun obtenerEventos(): Response<List<EventoDto>>
+
+    // --- NUEVO ENDPOINT PARA SUBIR IMAGEN DE PERFIL ---
+    @Multipart
+    @PUT("api/usuarios/{id}/imagen")
+    suspend fun subirImagenPerfil(
+        @Path("id") usuarioId: String,
+        @Part imagen: MultipartBody.Part
+    ): Response<AuthResponse>
 }

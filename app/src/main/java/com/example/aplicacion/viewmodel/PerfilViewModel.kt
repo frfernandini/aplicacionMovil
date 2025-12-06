@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-// PASO 1: Añadir la dependencia del repositorio de preferencias
+// CAMBIO: Se vuelve a añadir la dependencia del repositorio de preferencias local
 class PerfilViewModel(
     application: Application,
     private val prefsRepository: UserPreferencesRepository
@@ -23,13 +23,14 @@ class PerfilViewModel(
 
     init {
         viewModelScope.launch {
-            // PASO 2: Observar el Flow de la URI de la imagen
-            prefsRepository.profileImageUri.collect { savedImageUri ->
+            // Escucha cambios en la imagen guardada localmente
+            prefsRepository.profileImageUri.collect { localImageUri ->
                 _perfilState.update {
                     it.copy(
                         nombreUsuario = SessionManager.userName ?: "Usuario",
                         email = SessionManager.userEmail ?: "Sin correo",
-                        imagenUri = savedImageUri ?: "" // <-- Se actualiza automáticamente
+                        // LÓGICA HÍBRIDA: Usa la imagen local si existe, si no, la del backend (sesión).
+                        imagenUri = localImageUri?.takeIf { uri -> uri.isNotBlank() } ?: SessionManager.userImageUrl ?: ""
                     )
                 }
             }
@@ -40,7 +41,7 @@ class PerfilViewModel(
         viewModelScope.launch {
             // Limpiar la sesión en el SessionManager
             SessionManager.clearSession()
-            // Limpiar también la imagen guardada en DataStore
+            // Limpiar también la imagen guardada localmente para el próximo usuario
             prefsRepository.saveProfileImageUri("")
             _perfilState.update { it.copy(logoutExitoso = true) }
         }

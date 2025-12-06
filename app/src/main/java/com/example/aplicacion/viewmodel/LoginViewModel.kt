@@ -45,6 +45,7 @@ class LoginViewModel(application: Application, private val repo: UsuarioReposito
                     SessionManager.userId = authResponse.id
                     SessionManager.userName = authResponse.nombre
                     SessionManager.userEmail = correo // El email lo tenemos del formulario
+                    SessionManager.userImageUrl = authResponse.imagenUrl // <-- CAMPO AÑADIDO
 
                     // Actualiza el estado de la UI para la navegación
                     _loginState.update {
