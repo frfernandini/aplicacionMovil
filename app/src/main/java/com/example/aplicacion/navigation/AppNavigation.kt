@@ -6,9 +6,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.aplicacion.data.remote.RetrofitInstance
 import com.example.aplicacion.model.local.AppDatabase
 import com.example.aplicacion.model.repository.ProductoRepository
@@ -38,7 +40,6 @@ fun AppNavigation(
         }
 
         composable("perfil") {
-            // ARREGLO: Usar la factory para inyectar el repositorio de preferencias
             val factory = PerfilViewModelFactory(LocalContext.current.applicationContext as Application)
             val perfilViewModel: PerfilViewModel = viewModel(factory = factory)
             ProfileScreen(navController = navController, profileViewModel = perfilViewModel)
@@ -54,6 +55,12 @@ fun AppNavigation(
             val factory = EventoViewModelFactory(LocalContext.current.applicationContext as Application)
             val eventoViewModel: EventoViewModel = viewModel(factory = factory)
             EventoScreen(navController, eventoViewModel)
+        }
+
+        composable("blogs") {
+            val factory = BlogViewModelFactory()
+            val blogViewModel: BlogViewModel = viewModel(factory = factory)
+            BlogScreen(navController, blogViewModel)
         }
 
         composable("home") {
@@ -90,6 +97,22 @@ fun AppNavigation(
                     productoViewModel.vaciarCarrito()
                 }
             )
+        }
+
+        composable(
+            route = "producto_detail/{productoId}",
+            arguments = listOf(navArgument("productoId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val productoId = backStackEntry.arguments?.getLong("productoId")
+            if (productoId != null) {
+                ProductoDetailScreen(
+                    productoViewModel = productoViewModel,
+                    productoId = productoId,
+                    onBack = { navController.popBackStack() }
+                )
+            } else {
+                navController.popBackStack()
+            }
         }
     }
 }

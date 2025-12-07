@@ -30,10 +30,20 @@ class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
     private val _busquedaCategoria = MutableStateFlow("")
     val busquedaCategoria: StateFlow<String> = _busquedaCategoria
 
+    // --- NUEVO ESTADO PARA DETALLES ---
+    private val _productoSeleccionado = MutableStateFlow<ProductoDto?>(null)
+    val productoSeleccionado: StateFlow<ProductoDto?> = _productoSeleccionado.asStateFlow()
+
     private var usuarioId: String? = null
 
     init {
         cargarProductosRemotos()
+    }
+
+    // --- NUEVA FUNCIÓN PARA DETALLES ---
+    fun obtenerProductoPorId(id: Long) {
+        val producto = _productos.value.find { it.id == id }
+        _productoSeleccionado.value = producto
     }
 
     fun setUsuarioId(id: String) {
@@ -89,20 +99,18 @@ class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
         }
     }
 
-    // --- NUEVAS FUNCIONES PARA CANTIDAD ---
     fun aumentarCantidad(producto: ProductoDto) {
         usuarioId?.let { uId ->
             viewModelScope.launch {
                 val success = repo.aumentarCantidad(uId, producto.id)
                 if (success) {
-                    cargarCarrito() // Recargamos para obtener la nueva cantidad y total
+                    cargarCarrito()
                 }
             }
         }
     }
 
     fun disminuirCantidad(producto: ProductoDto) {
-        // Si la cantidad es 1, disminuir es lo mismo que quitar del carrito
         if (producto.cantidad <= 1) {
             quitarDelCarrito(producto)
         } else {
@@ -110,7 +118,7 @@ class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
                 viewModelScope.launch {
                     val success = repo.disminuirCantidad(uId, producto.id)
                     if (success) {
-                        cargarCarrito() // Recargamos para obtener la nueva cantidad y total
+                        cargarCarrito()
                     }
                 }
             }
@@ -142,12 +150,7 @@ class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
     }
 
     fun onDescripcionCharge(valor: String) {
-        _estado.update {
-            it.copy(
-                descripcion = valor,
-                errores = it.errores.copy(descripcion = null)
-            )
-        }
+        _estado.update { it.copy(descripcion = valor, errores = it.errores.copy(descripcion = null)) }
     }
 
     fun onPrecioCharge(valor: String) {
@@ -159,12 +162,7 @@ class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
     }
 
     fun onCategoriaCharge(valor: String) {
-        _estado.update {
-            it.copy(
-                categoria = valor,
-                errores = it.errores.copy(categoria = null)
-            )
-        }
+        _estado.update { it.copy(categoria = valor, errores = it.errores.copy(categoria = null)) }
     }
 
     fun onEnCarritoCharge(valor: Boolean) {
@@ -188,13 +186,7 @@ class ProductoViewModel(private val repo: ProductoRepository) : ViewModel() {
             categoria = if (_estado.value.categoria.isBlank()) "El Campo Es Obligatorio" else null,
         )
 
-        val existenErrores = listOfNotNull(
-            errores.nombre,
-            errores.descripcion,
-            errores.precio,
-            errores.imagen,
-            errores.categoria
-        ).isNotEmpty()
+        val existenErrores = listOfNotNull(errores.nombre, errores.descripcion, errores.precio, errores.imagen, errores.categoria).isNotEmpty()
 
         _estado.update { it.copy(errores = errores) }
         return !existenErrores

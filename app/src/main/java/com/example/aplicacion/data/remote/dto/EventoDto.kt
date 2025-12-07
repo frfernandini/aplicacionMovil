@@ -9,7 +9,6 @@ data class EventoDto(
     val imagenUrl: String?,
     val lugar: String,
     val categoriaAsociada: String?,
-    // Nuevos campos para el mapa (opcionales por ahora)
     val latitud: Double? = -33.0444,
     val longitud: Double? = -71.6155
 )

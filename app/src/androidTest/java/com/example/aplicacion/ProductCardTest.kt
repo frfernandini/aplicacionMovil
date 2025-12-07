@@ -28,7 +28,8 @@ class ProductCardTest {
                 ProductCard(
                     producto = producto,
                     vm = mockViewModel,
-                    estaEnCarrito = false
+                    estaEnCarrito = false,
+                    onProductClick = {} // ARREGLO: Añadido parámetro lambda vacío
                 )
             }
         }
@@ -54,7 +55,8 @@ class ProductCardTest {
                 ProductCard(
                     producto = producto,
                     vm = mockViewModel,
-                    estaEnCarrito = true
+                    estaEnCarrito = true,
+                    onProductClick = {} // ARREGLO: Añadido parámetro lambda vacío
                 )
             }
         }

@@ -1,6 +1,7 @@
 package com.example.aplicacion.ui.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
@@ -11,17 +12,12 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
-@Composable
-fun BottomNavBar(navController : NavController,currentRoute:String?) {
 
+@Composable
+fun BottomNavBar(navController : NavController, currentRoute:String?) {
 
     NavigationBar(
-
         containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface
     ) {
@@ -40,6 +36,24 @@ fun BottomNavBar(navController : NavController,currentRoute:String?) {
                 indicatorColor = MaterialTheme.colorScheme.surface
             )
         )
+        
+        // NUEVO ÍTEM: BLOGS
+        NavigationBarItem(
+            selected = currentRoute == "blogs",
+            onClick = {
+                if (currentRoute != "blogs") {
+                    navController.navigate("blogs")
+                }
+            },
+            icon = { Icon(Icons.Default.Article, contentDescription = "Blogs") },
+            label = { Text("Noticias") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = MaterialTheme.colorScheme.secondary,
+                unselectedIconColor = MaterialTheme.colorScheme.onSurface,
+                indicatorColor = MaterialTheme.colorScheme.surface
+            )
+        )
+
         NavigationBarItem(
             selected = currentRoute == "eventos",
             onClick = {

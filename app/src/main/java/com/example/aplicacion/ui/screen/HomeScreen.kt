@@ -45,8 +45,6 @@ fun HomeScreen(
     val isLoading by productoViewModel.isLoading.collectAsState()
     val carrito by productoViewModel.carrito.collectAsState()
 
-    // El LaunchedEffect ha sido eliminado. La carga ahora es responsabilidad del ViewModel.
-
     val filtradoProductos =
         if (categoriaSeleccionada.isEmpty()) {
             productos
@@ -80,7 +78,11 @@ fun HomeScreen(
                         productos = filtradoProductos,
                         vm = productoViewModel,
                         carrito = carrito,
-                        onEdit = { /* No se maneja aquí */ }
+                        onEdit = { /* No se maneja aquí */ },
+                        // --- PASAMOS LA NAVEGACIÓN ---
+                        onProductClick = { productoId ->
+                            navController.navigate("producto_detail/$productoId")
+                        }
                     )
                 } else {
                     Text(

@@ -60,4 +60,8 @@ interface ApiService {
         @Path("id") usuarioId: String,
         @Part imagen: MultipartBody.Part
     ): Response<AuthResponse>
+
+    // --- NUEVO ENDPOINT PARA BLOGS ---
+    @GET("api/blogs")
+    suspend fun obtenerBlogs(): Response<List<BlogDto>>
 }

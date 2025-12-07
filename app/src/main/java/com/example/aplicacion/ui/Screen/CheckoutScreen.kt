@@ -1,5 +1,6 @@
 package com.example.aplicacion.ui.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -12,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,9 +35,12 @@ fun CheckoutScreen(
     onPedidoExitoso: () -> Unit
 ) {
     val uiState by checkoutViewModel.uiState.collectAsState()
+    val context = LocalContext.current // Contexto para el Toast
 
     LaunchedEffect(uiState.pedidoExitoso) {
         if (uiState.pedidoExitoso) {
+            // MOSTRAR MENSAJE DE ÉXITO
+            Toast.makeText(context, "¡Pedido realizado con éxito!", Toast.LENGTH_LONG).show()
             onPedidoExitoso()
             checkoutViewModel.onNavegacionRealizada()
         }
@@ -57,7 +62,7 @@ fun CheckoutScreen(
         bottomBar = {
             BottomAppBar(
                 containerColor = Color.DarkGray,
-                modifier = Modifier.height(80.dp) // Aumentamos la altura de la barra
+                modifier = Modifier.height(80.dp)
             ) {
                 Button(
                     onClick = {
@@ -65,7 +70,7 @@ fun CheckoutScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp), // Padding vertical ahora lo controla la barra
+                        .padding(horizontal = 16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Blue),
                     enabled = !uiState.isLoading
                 ) {

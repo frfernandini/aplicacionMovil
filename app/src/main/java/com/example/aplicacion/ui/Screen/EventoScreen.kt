@@ -39,10 +39,8 @@ import com.google.maps.android.compose.*
 @Composable
 fun EventoScreen(navController: NavController, viewModel: EventoViewModel) {
     
-    // Consumimos los datos reales del ViewModel
     val uiState by viewModel.uiState.collectAsState()
 
-    // --- LÓGICA DE PERMISOS Y UBICACIÓN ---
     val locationPermissionsState = rememberMultiplePermissionsState(
         permissions = listOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -93,7 +91,6 @@ fun EventoScreen(navController: NavController, viewModel: EventoViewModel) {
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            // MAPA: Siempre visible, usando coordenadas de la BD o por defecto
             GoogleMap(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -107,7 +104,6 @@ fun EventoScreen(navController: NavController, viewModel: EventoViewModel) {
                 )
             ) {
                 uiState.eventos.forEach { evento ->
-                    // Usamos las coordenadas del DTO o unas por defecto
                     val lat = evento.latitud ?: -33.0444
                     val lng = evento.longitud ?: -71.6155
                     Marker(
@@ -118,7 +114,6 @@ fun EventoScreen(navController: NavController, viewModel: EventoViewModel) {
                 }
             }
 
-            // LISTA DE EVENTOS: Datos reales desde S3 y BD
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
@@ -172,9 +167,10 @@ fun EventoCard(evento: EventoDto) {
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                InfoRow(icon = Icons.Default.CalendarToday, text = evento.fechaInicio)
+                // ARREGLO: Usar el operador Elvis ?: para manejar nulos
+                InfoRow(icon = Icons.Default.CalendarToday, text = evento.fechaInicio ?: "Fecha por confirmar")
                 Spacer(modifier = Modifier.height(4.dp))
-                InfoRow(icon = Icons.Default.Place, text = evento.lugar)
+                InfoRow(icon = Icons.Default.Place, text = evento.lugar ?: "Lugar por confirmar")
             }
         }
     }

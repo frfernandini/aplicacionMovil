@@ -1,6 +1,11 @@
 package com.example.aplicacion.ui.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -19,32 +24,36 @@ fun ProductSection(
     title: String,
     productos: List<ProductoDto>,
     vm: ProductoViewModel,
-    // CHANGED: From Set<Long> to List<ProductoDto>
     carrito: List<ProductoDto>,
-    onEdit: (ProductoDto) -> Unit
+    onEdit: (Int) -> Unit,
+    onProductClick: (Long) -> Unit
 ) {
-    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+    Column(modifier = Modifier.padding(vertical = 16.dp)) {
         Text(
             text = title,
-            color = TextColor,
-            fontSize = 18.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
+            color = TextColor,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
-        Spacer(modifier = Modifier.height(12.dp))
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            // ARREGLO: height() es parte de Modifier
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp)
+                .height(500.dp) 
         ) {
-            items(productos) { producto ->
+            items(productos) {
+                val estaEnCarrito = carrito.any { item -> item.id == it.id }
                 ProductCard(
-                    producto = producto,
+                    producto = it,
                     vm = vm,
-                    // CHANGED: The logic to check if a product is in the cart
-                    estaEnCarrito = carrito.any { it.id == producto.id }
-
+                    estaEnCarrito = estaEnCarrito,
+                    onProductClick = onProductClick
                 )
             }
         }
