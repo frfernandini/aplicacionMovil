@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitInstance {
     // url beanstalk:http://levelup.us-east-1.elasticbeanstalk.com/
     //url local:http://10.0.2.2:5000/
-    private const val BASE_URL = "http://10.0.2.2:5000/"
+    private const val BASE_URL = "http://levelup.us-east-1.elasticbeanstalk.com"
 
     // --- INTERCEPTOR DE AUTENTICACIÓN ---
     private val authInterceptor = Interceptor { chain ->
