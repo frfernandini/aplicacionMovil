@@ -104,12 +104,13 @@ fun EventoScreen(navController: NavController, viewModel: EventoViewModel) {
                 )
             ) {
                 uiState.eventos.forEach { evento ->
+                    // Protección extra contra nulos en coordenadas
                     val lat = evento.latitud ?: -33.0444
                     val lng = evento.longitud ?: -71.6155
                     Marker(
                         state = MarkerState(position = LatLng(lat, lng)),
-                        title = evento.nombre,
-                        snippet = evento.lugar
+                        title = evento.nombre ?: "Evento", // Protección aquí también
+                        snippet = evento.lugar ?: "Ubicación pendiente"
                     )
                 }
             }
@@ -148,8 +149,8 @@ fun EventoCard(evento: EventoDto) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = evento.imagenUrl,
-                contentDescription = "Imagen del evento ${evento.nombre}",
+                model = evento.imagenUrl ?: "", // Protección en la URL
+                contentDescription = "Imagen del evento ${evento.nombre ?: ""}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(80.dp)
@@ -161,16 +162,23 @@ fun EventoCard(evento: EventoDto) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = evento.nombre,
+                    text = evento.nombre ?: "Nombre no disponible", // Protección
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                // ARREGLO: Usar el operador Elvis ?: para manejar nulos
-                InfoRow(icon = Icons.Default.CalendarToday, text = evento.fechaInicio ?: "Fecha por confirmar")
+                
+                // Protección en InfoRow
+                InfoRow(
+                    icon = Icons.Default.CalendarToday, 
+                    text = evento.fechaInicio ?: "Fecha por confirmar"
+                )
                 Spacer(modifier = Modifier.height(4.dp))
-                InfoRow(icon = Icons.Default.Place, text = evento.lugar ?: "Lugar por confirmar")
+                InfoRow(
+                    icon = Icons.Default.Place, 
+                    text = evento.lugar ?: "Lugar por confirmar"
+                )
             }
         }
     }
@@ -186,6 +194,8 @@ fun InfoRow(icon: ImageVector, text: String) {
             modifier = Modifier.size(16.dp)
         )
         Spacer(modifier = Modifier.width(4.dp))
+        // Si por alguna razón text llega nulo aquí, esto evitaría el crash, 
+        // pero la llamada segura arriba (?:) debería prevenirlo.
         Text(text = text, style = MaterialTheme.typography.bodyMedium)
     }
 }
