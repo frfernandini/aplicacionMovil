@@ -40,14 +40,14 @@ class LoginViewModel(application: Application, private val repo: UsuarioReposito
                 val authResponse = repo.loginUsuario(loginRequest)
 
                 if (authResponse != null && authResponse.token.isNotBlank() && authResponse.id.isNotBlank()) {
-                    // Guardar TODA la información de la sesión
                     SessionManager.authToken = authResponse.token
                     SessionManager.userId = authResponse.id
                     SessionManager.userName = authResponse.nombre
-                    SessionManager.userEmail = correo // El email lo tenemos del formulario
-                    SessionManager.userImageUrl = authResponse.imagenUrl // <-- CAMPO AÑADIDO
+                    SessionManager.userEmail = correo
+                    
+                    // ARREGLO: Usar el nuevo método para actualizar el StateFlow
+                    SessionManager.setUserImageUrl(authResponse.imagenUrl)
 
-                    // Actualiza el estado de la UI para la navegación
                     _loginState.update {
                         it.copy(
                             loginExitoso = true,
@@ -66,7 +66,6 @@ class LoginViewModel(application: Application, private val repo: UsuarioReposito
     }
 
     fun onNavegacionRealizada() {
-        // Resetea el estado de navegación para evitar re-navegaciones accidentales
         _loginState.update { it.copy(loginExitoso = false) }
     }
 }

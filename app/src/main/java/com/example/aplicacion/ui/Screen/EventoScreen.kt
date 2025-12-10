@@ -2,6 +2,7 @@ package com.example.aplicacion.ui.screen
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -104,12 +105,11 @@ fun EventoScreen(navController: NavController, viewModel: EventoViewModel) {
                 )
             ) {
                 uiState.eventos.forEach { evento ->
-                    // Protección extra contra nulos en coordenadas
                     val lat = evento.latitud ?: -33.0444
                     val lng = evento.longitud ?: -71.6155
                     Marker(
                         state = MarkerState(position = LatLng(lat, lng)),
-                        title = evento.nombre ?: "Evento", // Protección aquí también
+                        title = evento.nombre ?: "Evento",
                         snippet = evento.lugar ?: "Ubicación pendiente"
                     )
                 }
@@ -138,6 +138,9 @@ fun EventoScreen(navController: NavController, viewModel: EventoViewModel) {
 
 @Composable
 fun EventoCard(evento: EventoDto) {
+    // --- DEBUG LOG ---
+    Log.d("EventoDebug", "Renderizando EventoCard con data: $evento")
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -149,7 +152,7 @@ fun EventoCard(evento: EventoDto) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = evento.imagenUrl ?: "", // Protección en la URL
+                model = evento.imagenUrl ?: "",
                 contentDescription = "Imagen del evento ${evento.nombre ?: ""}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -162,40 +165,35 @@ fun EventoCard(evento: EventoDto) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = evento.nombre ?: "Nombre no disponible", // Protección
+                    text = evento.nombre ?: "Nombre no disponible",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 
-                // Protección en InfoRow
-                InfoRow(
-                    icon = Icons.Default.CalendarToday, 
-                    text = evento.fechaInicio ?: "Fecha por confirmar"
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.CalendarToday,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(text = evento.fechaInicio ?: "Fecha por confirmar", style = MaterialTheme.typography.bodyMedium)
+                }
                 Spacer(modifier = Modifier.height(4.dp))
-                InfoRow(
-                    icon = Icons.Default.Place, 
-                    text = evento.lugar ?: "Lugar por confirmar"
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Place,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(text = evento.lugar ?: "Lugar por confirmar", style = MaterialTheme.typography.bodyMedium)
+                }
             }
         }
-    }
-}
-
-@Composable
-fun InfoRow(icon: ImageVector, text: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(16.dp)
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        // Si por alguna razón text llega nulo aquí, esto evitaría el crash, 
-        // pero la llamada segura arriba (?:) debería prevenirlo.
-        Text(text = text, style = MaterialTheme.typography.bodyMedium)
     }
 }

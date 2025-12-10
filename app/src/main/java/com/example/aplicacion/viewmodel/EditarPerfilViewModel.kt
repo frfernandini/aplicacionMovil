@@ -4,47 +4,58 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.aplicacion.data.SessionManager
 import com.example.aplicacion.model.EditarPerfilUiState
-import com.example.aplicacion.model.repository.UserPreferencesRepository
+import com.example.aplicacion.model.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-// CAMBIO: La dependencia vuelve a ser el repositorio local
+// LÓGICA FINAL: Este ViewModel ahora depende de UsuarioRepository para subir la imagen a la red.
 class EditarPerfilViewModel(
     application: Application,
-    private val prefsRepository: UserPreferencesRepository
+    private val repository: UsuarioRepository
 ) : AndroidViewModel(application) {
 
     private val _editarPerfilState = MutableStateFlow(EditarPerfilUiState())
     val editarPerfilState = _editarPerfilState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            // Cargar la imagen guardada localmente al iniciar
-            val savedImageUri = prefsRepository.profileImageUri.first()
-            _editarPerfilState.update {
-                it.copy(imagenUri = savedImageUri ?: "")
-            }
+        // Al iniciar, la UI muestra la imagen que ya está en la sesión (puede ser de S3 o una local si se acaba de seleccionar)
+        _editarPerfilState.update {
+            // ARREGLO: Accedemos al valor actual del StateFlow con .value
+            it.copy(imagenUri = SessionManager.userImageUrl.value ?: "")
         }
     }
 
     fun onImagenSeleccionada(uri: Uri) {
-        // Actualiza el estado de la UI con la nueva URI para la vista previa
+        // Actualiza la UI para la vista previa de la imagen seleccionada.
         _editarPerfilState.update { it.copy(imagenUri = uri.toString()) }
     }
 
     fun guardarCambios() {
-        // LÓGICA DE WORKAROUND: Guardar la imagen localmente en lugar de subirla
         viewModelScope.launch {
-            val imageUriToSave = _editarPerfilState.value.imagenUri
-            if (imageUriToSave.isNotBlank()) {
-                prefsRepository.saveProfileImageUri(imageUriToSave)
+            val userId = SessionManager.userId ?: return@launch
+            val imagenUriString = _editarPerfilState.value.imagenUri
+
+            if (imagenUriString.isNotBlank() && imagenUriString.startsWith("content://")) {
+                val imagenUri = Uri.parse(imagenUriString)
+                
+                // Llama a la función del repositorio para subir la imagen al backend.
+                val success = repository.subirImagenPerfil(userId, imagenUri)
+
+                if (success) {
+                    // Si la subida es exitosa, el repo ya actualizó el SessionManager.
+                    // Marcamos para navegar hacia atrás.
+                    _editarPerfilState.update { it.copy(guardadoExitoso = true) }
+                } else {
+                    // Opcional: Manejar el error en la UI (ej. mostrar un Toast)
+                }
+            } else {
+                 // Si la imagen no ha cambiado (no es una uri local), simplemente cerramos.
+                 _editarPerfilState.update { it.copy(guardadoExitoso = true) }
             }
-            // Marcar como guardado para que la pantalla navegue hacia atrás
-            _editarPerfilState.update { it.copy(guardadoExitoso = true) }
         }
     }
 

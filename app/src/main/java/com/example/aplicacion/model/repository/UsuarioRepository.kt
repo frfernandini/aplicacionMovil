@@ -15,8 +15,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException // <-- IMPORTACIÓN AÑADIDA
-
+import java.io.IOException
 
 class UsuarioRepository(private val api: ApiService, private val usuarioDAO: UsuarioDAO, private val context: Context) {
 
@@ -45,25 +44,21 @@ class UsuarioRepository(private val api: ApiService, private val usuarioDAO: Usu
         return usuarioDAO.get(id)
     }
 
-    // --- NUEVA FUNCIÓN PARA SUBIR IMAGEN DE PERFIL ---
     suspend fun subirImagenPerfil(userId: String, imagenUri: Uri): Boolean {
-        // 1. Convertir la URI a un archivo temporal
         val file = uriToFile(imagenUri)
         if (file == null) {
-            return false // No se pudo crear el archivo
+            return false
         }
 
         return try {
-            // 2. Preparar el MultipartBody.Part
             val requestFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
             val body = MultipartBody.Part.createFormData("imagen", file.name, requestFile)
 
-            // 3. Llamar a la API
             val response = api.subirImagenPerfil(userId, body)
 
             if (response.isSuccessful && response.body() != null) {
-                // 4. Actualizar la sesión con la nueva URL de la imagen
-                SessionManager.userImageUrl = response.body()!!.imagenUrl
+                // ARREGLO: Usar el nuevo método para actualizar el StateFlow
+                SessionManager.setUserImageUrl(response.body()!!.imagenUrl)
                 true
             } else {
                 false
@@ -72,12 +67,10 @@ class UsuarioRepository(private val api: ApiService, private val usuarioDAO: Usu
             e.printStackTrace()
             false
         } finally {
-            // 5. Limpiar el archivo temporal
             file.delete()
         }
     }
 
-    // Función auxiliar para convertir una URI a un archivo
     private fun uriToFile(uri: Uri): File? {
         return try {
             val contentResolver = context.contentResolver
