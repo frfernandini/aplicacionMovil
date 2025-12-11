@@ -43,11 +43,10 @@ fun ProductCard(
     estaEnCarrito: Boolean,
     onProductClick: (Long) -> Unit
 ) {
-    // ARREGLO: Definir altura fija para la tarjeta para asegurar uniformidad en la grilla
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(360.dp) // Altura fija y suficiente para evitar cortes
+            .height(360.dp)
             .border(
                 width = 2.dp,
                 color = verdeDarkBrillante,
@@ -64,7 +63,7 @@ fun ProductCard(
             contentDescription = producto.nombre,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(140.dp) // Imagen con tamaño fijo y consistente
+                .height(140.dp)
                 .padding(8.dp)
                 .clip(RoundedCornerShape(8.dp)),
             contentScale = ContentScale.Fit,
@@ -77,8 +76,6 @@ fun ProductCard(
                 .fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // SECCIÓN SUPERIOR: Texto (Título y Descripción)
-            // Usamos weight(1f) para que ocupe el espacio disponible sin empujar el botón
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = producto.nombre ?: "Nombre no disponible",
@@ -99,11 +96,10 @@ fun ProductCard(
                 )
             }
             
-            // SECCIÓN INFERIOR: Precio y Botón
-            // Esta sección siempre se quedará pegada al fondo
             Column {
                 Text(
-                    text = "$%.2f".format(producto.precio ?: 0.0),
+                    // ARREGLO: Formato de moneda chilena, sin decimales.
+                    text = "$%,.0f".format(producto.precio ?: 0.0),
                     color = verdeNeon,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
@@ -128,7 +124,7 @@ fun ProductCard(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(45.dp) // Altura fija para el botón: se acabó el estiramiento
+                        .height(45.dp)
                         .graphicsLayer(scaleX = scale, scaleY = scale),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (estaEnCarrito) Color.Red else AccentGreen
