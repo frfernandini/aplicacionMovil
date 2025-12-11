@@ -12,4 +12,8 @@ interface UsuarioDAO {
 
     @Query("SELECT * FROM usuarios WHERE id = :id")
     suspend fun get(id: Int): UsuarioEntity?
+
+    // --- NUEVO: Obtener el último usuario guardado ---
+    @Query("SELECT * FROM usuarios LIMIT 1")
+    suspend fun getUltimoUsuario(): UsuarioEntity?
 }

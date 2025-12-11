@@ -16,6 +16,16 @@ class LoginViewModel(application: Application, private val repo: UsuarioReposito
     private val _loginState = MutableStateFlow(LoginUiState())
     val loginState = _loginState.asStateFlow()
 
+    init {
+        // --- PERSISTENCIA LOCAL: Cargar último usuario ---
+        viewModelScope.launch {
+            val usuarioGuardado = repo.obtenerUltimoUsuarioLocal()
+            if (usuarioGuardado != null) {
+                _loginState.update { it.copy(correo = usuarioGuardado.correo) }
+            }
+        }
+    }
+
     fun onCorreoChange(correo: String) {
         _loginState.update { it.copy(correo = correo) }
     }
@@ -45,8 +55,16 @@ class LoginViewModel(application: Application, private val repo: UsuarioReposito
                     SessionManager.userName = authResponse.nombre
                     SessionManager.userEmail = correo
                     
-                    // ARREGLO: Usar el nuevo método para actualizar el StateFlow
                     SessionManager.setUserImageUrl(authResponse.imagenUrl)
+
+                    // --- PERSISTENCIA LOCAL: Guardar usuario para la próxima vez ---
+                    // Guardamos el usuario localmente para recordar su correo
+                    repo.guardarUsuarioLocal(
+                        id = authResponse.id,
+                        nombre = authResponse.nombre,
+                        email = correo
+                    )
+                    // -----------------------------------------------------------
 
                     _loginState.update {
                         it.copy(

@@ -36,14 +36,6 @@ class UsuarioRepository(private val api: ApiService, private val usuarioDAO: Usu
         }
     }
 
-    suspend fun guardarUsuario(usuario: UsuarioEntity) {
-        usuarioDAO.insert(usuario)
-    }
-
-    suspend fun obtenerUsuario(id: Int): UsuarioEntity? {
-        return usuarioDAO.get(id)
-    }
-
     suspend fun subirImagenPerfil(userId: String, imagenUri: Uri): Boolean {
         val file = uriToFile(imagenUri)
         if (file == null) {
@@ -57,7 +49,6 @@ class UsuarioRepository(private val api: ApiService, private val usuarioDAO: Usu
             val response = api.subirImagenPerfil(userId, body)
 
             if (response.isSuccessful && response.body() != null) {
-                // ARREGLO: Usar el nuevo método para actualizar el StateFlow
                 SessionManager.setUserImageUrl(response.body()!!.imagenUrl)
                 true
             } else {
@@ -88,5 +79,23 @@ class UsuarioRepository(private val api: ApiService, private val usuarioDAO: Usu
             e.printStackTrace()
             null
         }
+    }
+
+    // --- FUNCIONES DE PERSISTENCIA LOCAL ---
+    suspend fun guardarUsuarioLocal(id: String, nombre: String, email: String) {
+        // El ID de la entidad es un Int, pero el del backend es un String.
+        // Usaremos un ID fijo (1) para sobreescribir siempre y recordar solo al último usuario.
+        val entity = UsuarioEntity(
+            id = 1, 
+            nombre = nombre,
+            correo = email,
+            contrasena = "", // No guardamos la contraseña por seguridad
+            direccion = ""
+        )
+        usuarioDAO.insert(entity)
+    }
+
+    suspend fun obtenerUltimoUsuarioLocal(): UsuarioEntity? {
+        return usuarioDAO.getUltimoUsuario()
     }
 }
